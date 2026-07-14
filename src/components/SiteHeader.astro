@@ -1,0 +1,49 @@
+---
+const path = Astro.url.pathname;
+const links = [
+  { href: '/blog/', label: 'Блог' },
+  { href: '/projects/', label: 'Проекты' },
+  { href: '/about/', label: 'Обо мне' }
+];
+---
+
+<header class="site-header container">
+  <a class="brand" href="/" aria-label="glepzilla — на главную">
+    <img src="/logo.png" width="48" height="48" alt="" />
+    <span>glepzilla</span>
+  </a>
+
+  <nav aria-label="Основная навигация">
+    {links.map((link) => (
+      <a class:list={["nav-link", { active: path.startsWith(link.href) }]} href={link.href} aria-current={path.startsWith(link.href) ? 'page' : undefined}>
+        {link.label}
+      </a>
+    ))}
+    <span class="language" title="Английская версия появится позже">RU/<span>EN</span></span>
+  </nav>
+</header>
+
+<style>
+  .site-header { min-height: 92px; display: flex; align-items: center; justify-content: space-between; gap: 32px; position: relative; z-index: 20; }
+  .brand { display: inline-flex; align-items: center; gap: 13px; color: var(--gz-text-on-dark); font-family: var(--gz-font-display); font-size: 1.45rem; font-weight: 600; text-decoration: none; }
+  .brand img { display: block; width: 48px; height: 48px; border-radius: 50%; }
+  nav { display: flex; align-items: center; gap: clamp(16px, 3vw, 30px); }
+  .nav-link { position: relative; color: var(--gz-sage-200); font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: color 150ms ease; }
+  .nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -8px; height: 1px; background: var(--gz-moss-400); transform: scaleX(0); transition: transform 150ms ease; }
+  .nav-link:hover, .nav-link.active { color: var(--gz-moss-400); }
+  .nav-link.active::after { transform: scaleX(1); }
+  .language { color: var(--gz-sage-300); font-family: var(--gz-font-mono); font-size: 0.75rem; }
+  .language span { opacity: 0.4; }
+  @media (max-width: 680px) {
+    .site-header { min-height: 80px; }
+    .brand span { display: none; }
+    .brand img { width: 44px; height: 44px; }
+    nav { gap: 13px; }
+    .nav-link { font-size: 0.78rem; }
+    .language { display: none; }
+  }
+  @media (max-width: 420px) {
+    nav { gap: 10px; }
+    .nav-link { font-size: 0.72rem; }
+  }
+</style>

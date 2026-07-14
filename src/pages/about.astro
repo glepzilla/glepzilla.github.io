@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Tag from '../components/Tag.astro';
+---
+<BaseLayout title="Обо мне — glepzilla" description="Коротко о Глебе и о том, зачем существует glepzilla.">
+  <section class="about-page container">
+    <div class="paper-card sheet">
+      <header>
+        <img src="/logo.png" width="108" height="108" alt="Моховой кайдзю с карандашом — логотип glepzilla" />
+        <div><span class="eyebrow eyebrow--paper">Автор этого места</span><h1>Привет, я Глеб<span class="title-dot">.</span></h1></div>
+      </header>
+
+      <div class="copy prose">
+        <p>Делаю цифровые вещи, разбираюсь в инструментах и собираю здесь то, что хочется сохранить дольше одной ленты.</p>
+        <p>glepzilla — мой дом в интернете: немного блог, немного портфолио и немного лаборатория. Сайт намеренно простой — чтобы больше времени уходило на идеи, а не на обслуживание сайта.</p>
+      </div>
+
+      <section class="principles">
+        <span class="eyebrow eyebrow--faint">Что здесь важно</span>
+        <div class="principle-grid">
+          <div><span>01</span><strong>Писать честно</strong><p>Без маркетингового голоса и обязательного расписания.</p></div>
+          <div><span>02</span><strong>Делать руками</strong><p>Показывать не только результат, но и путь к нему.</p></div>
+          <div><span>03</span><strong>Оставаться любопытным</strong><p>Пробовать новое, не превращая инструменты в самоцель.</p></div>
+        </div>
+      </section>
+
+      <section class="stack">
+        <span class="eyebrow eyebrow--faint">Этот сайт сделан на</span>
+        <div><Tag tone="moss">Astro</Tag><Tag tone="sand">TypeScript</Tag><Tag tone="sand">Markdown</Tag><Tag tone="sand">GitHub Pages</Tag></div>
+      </section>
+
+      <section class="contact">
+        <span class="eyebrow eyebrow--faint">Связаться</span>
+        <a class="text-link text-link--paper" href="https://github.com/gl-epka" rel="me noreferrer">github.com/gl-epka →</a>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-page { max-width: 920px; padding-top: 60px; }
+  .sheet { padding: clamp(30px, 7vw, 62px); transform: rotate(-0.4deg); }
+  header { display: flex; align-items: center; gap: 26px; margin-bottom: 38px; }
+  header img { flex: none; width: 108px; height: 108px; border-radius: 50%; box-shadow: 0 0 0 3px var(--gz-paper-300); }
+  h1 { margin: 6px 0 0; color: var(--gz-ink-900); font-family: var(--gz-font-display); font-size: clamp(2.25rem, 6vw, 3.3rem); font-weight: 500; line-height: 1.1; }
+  .copy { max-width: 680px; font-size: 1.03rem; }
+  .principles, .stack, .contact { margin-top: 38px; padding-top: 26px; border-top: 1px solid var(--gz-paper-300); }
+  .principle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 20px; }
+  .principle-grid div { display: flex; flex-direction: column; }
+  .principle-grid span { color: var(--gz-moss-600); font-family: var(--gz-font-mono); font-size: 0.68rem; }
+  .principle-grid strong { margin-top: 8px; color: var(--gz-ink-900); }
+  .principle-grid p { margin: 6px 0 0; color: var(--gz-ink-500); font-size: 0.8rem; line-height: 1.55; }
+  .stack > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .contact { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  @media (max-width: 680px) { .about-page { padding-top: 42px; } header { align-items: flex-start; } header img { width: 82px; height: 82px; } .principle-grid { grid-template-columns: 1fr; } .contact { align-items: flex-start; flex-direction: column; gap: 10px; } }
+</style>

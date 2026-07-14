@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://glepzilla.ru/sitemap-index.xml

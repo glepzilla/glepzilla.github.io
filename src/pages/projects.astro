@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Tag from '../components/Tag.astro';
+---
+<BaseLayout title="Проекты — glepzilla" description="Проекты Глеба: рабочие, личные и экспериментальные.">
+  <section class="projects-page container">
+    <h1 class="section-heading">Проекты<span class="title-dot">.</span></h1>
+    <p class="page-intro">То, что я делал руками — от небольших экспериментов до вещей, которыми пользуются другие.</p>
+
+    <div class="grid">
+      <article class="paper-card project project--featured">
+        <div class="project-top"><span class="eyebrow eyebrow--paper">Open source / Telegram</span><span class="year">2026</span></div>
+        <h2>Shiki Cards Bot</h2>
+        <p>Проект из организации glepzilla. Исходники открыты: можно посмотреть устройство проекта, историю изменений и забрать идеи себе.</p>
+        <div class="project-bottom"><div><Tag tone="sand">telegram</Tag><Tag tone="sand">bot</Tag></div><a class="text-link text-link--paper" href="https://github.com/glepzilla/shiki-cards-bot" rel="noreferrer">смотреть →</a></div>
+      </article>
+
+      <article class="paper-card project project--site">
+        <div class="project-top"><span class="eyebrow eyebrow--paper">Web / личный проект</span><span class="year">2026</span></div>
+        <h2>glepzilla.github.io</h2>
+        <p>Этот сайт: дизайн-система, статическая сборка и блог на Markdown. Маленькое место в сети, которое не зависит от ленты.</p>
+        <div class="project-bottom"><div><Tag tone="sand">astro</Tag><Tag tone="sand">markdown</Tag></div><a class="text-link text-link--paper" href="https://github.com/glepzilla/glepzilla.github.io" rel="noreferrer">исходники →</a></div>
+      </article>
+
+      <a class="dark-tile archive" href="/blog/">
+        <span class="eyebrow eyebrow--faint">Лаборатория / постоянно</span>
+        <div><h2>Маленькие эксперименты →</h2><p>Наблюдения, инструменты и идеи, которым пока тесно в большом проекте.</p></div>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .projects-page { padding-top: 65px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 42px; }
+  .project { min-height: 390px; display: flex; flex-direction: column; padding: 36px; }
+  .project--featured { transform: rotate(-0.7deg); }
+  .project--site { transform: rotate(0.8deg) translateY(12px); }
+  .project-top, .project-bottom { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
+  .year { color: var(--gz-text-faint); font-family: var(--gz-font-mono); font-size: 0.72rem; }
+  h2 { margin: auto 0 12px; color: var(--gz-ink-900); font-family: var(--gz-font-display); font-size: clamp(1.8rem, 4vw, 2.25rem); font-weight: 500; line-height: 1.2; }
+  .project p { margin: 0 0 28px; color: var(--gz-ink-500); font-size: 0.9rem; }
+  .project-bottom > div { display: flex; flex-wrap: wrap; gap: 7px; }
+  .project-bottom a { flex: none; font-size: 0.8rem; }
+  .archive { grid-column: 1 / -1; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between; padding: 32px 36px; transform: rotate(-0.35deg); text-decoration: none; }
+  .archive h2 { margin: 0 0 8px; color: var(--gz-text-on-dark); font-size: 1.65rem; }
+  .archive p { max-width: 560px; margin: 0; color: var(--gz-sage-300); font-size: 0.88rem; }
+  @media (max-width: 760px) { .projects-page { padding-top: 44px; } .grid { grid-template-columns: 1fr; } .project { min-height: 350px; padding: 28px; } .project--site { transform: rotate(0.8deg); } .archive { grid-column: auto; padding: 28px; } }
+</style>

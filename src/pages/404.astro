@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Страница не найдена — glepzilla" description="Такой страницы у glepzilla пока нет.">
+  <section class="not-found container">
+    <div class="paper-card card">
+      <span class="eyebrow eyebrow--paper">Ошибка 404</span>
+      <h1>Здесь пока ничего не растёт<span class="title-dot">.</span></h1>
+      <p>Возможно, страница переехала или ссылка была набрана с ошибкой.</p>
+      <a class="text-link text-link--paper" href="/">вернуться домой →</a>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .not-found { max-width: 780px; padding-top: 90px; }
+  .card { padding: clamp(34px, 8vw, 70px); transform: rotate(-0.7deg); }
+  h1 { margin: 14px 0; color: var(--gz-ink-900); font-family: var(--gz-font-display); font-size: clamp(2.2rem, 7vw, 3.8rem); font-weight: 500; line-height: 1.12; }
+  p { color: var(--gz-ink-500); }
+</style>

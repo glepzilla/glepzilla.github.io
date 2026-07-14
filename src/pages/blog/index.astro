@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostRow from '../../components/PostRow.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+---
+<BaseLayout title="Блог — glepzilla" description="Заметки Глеба о проектах, инструментах и жизни в интернете.">
+  <section class="blog-page container">
+    <h1 class="section-heading">Блог<span class="title-dot">.</span></h1>
+    <p class="page-intro">Пишу, когда есть что сказать. Без расписания.</p>
+
+    <div class="filters" aria-label="Фильтр записей по тегу">
+      <button class="filter active" type="button" data-filter="all" aria-pressed="true">все</button>
+      {tags.map((tag) => <button class="filter" type="button" data-filter={tag} aria-pressed="false">{tag}</button>)}
+    </div>
+
+    <div class="paper-card post-list" data-post-list>
+      {posts.map((post) => (
+        <PostRow
+          href={`/blog/${post.id}/`}
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.published}
+          tags={post.data.tags}
+        />
+      ))}
+      <p class="empty" hidden data-empty>По этому тегу пока ничего нет.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const rows = [...document.querySelectorAll<HTMLElement>('[data-tags]')];
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter ?? 'all';
+      let visible = 0;
+      buttons.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      rows.forEach((row) => {
+        const tags = (row.dataset.tags ?? '').split(',');
+        const show = filter === 'all' || tags.includes(filter);
+        row.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (empty) empty.hidden = visible > 0;
+    });
+  });
+</script>
+
+<style>
+  .blog-page { max-width: 940px; padding-top: 65px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 30px 0 28px; }
+  .filter { padding: 7px 14px; border: 1px solid var(--gz-border-tile); border-radius: var(--gz-radius-pill); background: transparent; color: var(--gz-sage-300); font-family: var(--gz-font-mono); font-size: 0.72rem; cursor: pointer; transition: 150ms ease; }
+  .filter:hover { border-color: var(--gz-moss-400); color: var(--gz-moss-400); }
+  .filter.active { border-color: var(--gz-moss-400); background: var(--gz-moss-400); color: var(--gz-forest-900); font-weight: 700; }
+  .post-list { padding: 30px 36px; transform: rotate(-0.45deg); }
+  .empty { margin: 0; padding: 25px 0 5px; color: var(--gz-ink-500); }
+  @media (max-width: 600px) { .blog-page { padding-top: 44px; } .post-list { padding: 22px; } }
+</style>

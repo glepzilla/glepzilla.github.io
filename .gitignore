@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+
+# Local design references (not part of the production site)
+kit/
+Glepzilla стартовая страница/

@@ -1,0 +1,18 @@
+<footer class="footer container">
+  <div>
+    <span>© {new Date().getFullYear()} glepzilla</span>
+    <span>сделано для себя, руками</span>
+  </div>
+  <div class="links">
+    <a href="/rss.xml">RSS</a>
+    <a href="https://github.com/glepzilla" rel="me noreferrer">GitHub</a>
+  </div>
+</footer>
+
+<style>
+  .footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; padding-top: 72px; padding-bottom: 36px; color: var(--gz-text-faint); font-family: var(--gz-font-mono); font-size: 0.72rem; letter-spacing: 0.04em; }
+  .footer > div { display: flex; gap: 22px; }
+  .links a { color: var(--gz-sage-300); text-decoration: none; }
+  .links a:hover { color: var(--gz-moss-400); }
+  @media (max-width: 620px) { .footer { align-items: flex-start; flex-direction: column; } .footer > div:first-child { flex-direction: column; gap: 4px; } }
+</style>

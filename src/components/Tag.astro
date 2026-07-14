@@ -1,0 +1,11 @@
+---
+interface Props { tone?: 'olive' | 'sand' | 'moss'; }
+const { tone = 'olive' } = Astro.props;
+---
+<span class:list={['tag', `tag--${tone}`]}><slot /></span>
+<style>
+  .tag { display: inline-flex; align-items: center; padding: 4px 11px; border: 1px solid; border-radius: var(--gz-radius-pill); font-family: var(--gz-font-mono); font-size: 0.7rem; line-height: 1.4; }
+  .tag--olive { border-color: rgba(143, 175, 106, 0.4); background: rgba(143, 175, 106, 0.18); color: var(--gz-moss-400); }
+  .tag--sand { border-color: var(--gz-paper-300); background: var(--gz-paper-100); color: var(--gz-ink-700); }
+  .tag--moss { border-color: var(--gz-moss-600); background: var(--gz-moss-600); color: var(--gz-paper-50); }
+</style>

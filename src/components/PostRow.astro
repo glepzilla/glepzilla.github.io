@@ -1,0 +1,36 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  date: Date;
+  tags?: string[];
+}
+const { href, title, description, date, tags = [] } = Astro.props;
+const formatted = new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: '2-digit' }).format(date);
+---
+
+<a class="post-row" href={href} data-tags={tags.join(',')}>
+  <span class="copy">
+    <span class="post-title">{title}</span>
+    {description && <span class="description">{description}</span>}
+  </span>
+  <span class="meta">
+    {tags[0] && <span class="tag">{tags[0]}</span>}
+    <time datetime={date.toISOString()}>{formatted}</time>
+  </span>
+</a>
+
+<style>
+  .post-row { display: flex; justify-content: space-between; align-items: baseline; gap: 28px; padding: 17px 0; border-top: 1px solid var(--gz-paper-300); color: var(--gz-ink-900); text-decoration: none; }
+  .copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .post-title { font-family: var(--gz-font-display); font-size: clamp(1.15rem, 3vw, 1.42rem); line-height: 1.35; transition: color 150ms ease; }
+  .post-row:hover .post-title { color: var(--gz-moss-600); }
+  .description { color: var(--gz-ink-500); font-size: 0.83rem; line-height: 1.55; }
+  .meta { display: flex; flex: none; align-items: baseline; gap: 13px; color: var(--gz-text-faint); font-family: var(--gz-font-mono); font-size: 0.72rem; }
+  .tag { color: var(--gz-moss-600); }
+  @media (max-width: 600px) {
+    .post-row { align-items: flex-start; flex-direction: column; gap: 8px; }
+    .meta { order: -1; }
+  }
+</style>
