@@ -1,6 +1,6 @@
 # glepzilla
 
-Личный сайт и блог Глеба на [glepzilla.ru](https://glepzilla.ru). Собран на Astro, оформлен по локальному `glepzilla-design-system` и публикуется на GitHub Pages.
+Личный сайт и блог Глеба на [glepzilla.ru](https://glepzilla.ru). Собран на Astro, оформлен по локальному `glepzilla-design-system` и разворачивается Docker-контейнером на собственном сервере.
 
 ## Локальный запуск
 
@@ -33,8 +33,8 @@ draft: false
 Текст записи в Markdown.
 ```
 
-3. Запустите `npm run build`.
-4. Закоммитьте и отправьте изменения в `main` — GitHub Actions опубликует сайт автоматически.
+3. Запустите `npm run verify`.
+4. Закоммитьте и отправьте изменения в `main` — GitHub Actions соберёт образ и развернёт его на self-hosted runner.
 
 Черновики с `draft: true` не попадают на сайт и в RSS.
 
@@ -44,4 +44,6 @@ draft: false
 - `src/pages/` — страницы сайта;
 - `src/components/` — переиспользуемые компоненты;
 - `src/styles/global.css` — токены и базовые стили из UI kit;
-- `.github/workflows/deploy.yml` — публикация в GitHub Pages.
+- `Dockerfile` и `nginx.conf` — production-образ сайта;
+- `compose.yml` — подключение контейнера к Traefik;
+- `.github/workflows/deploy.yml` — проверка, сборка GHCR-образа и деплой через self-hosted runner.
