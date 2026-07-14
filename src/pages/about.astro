@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import Tag from '../components/Tag.astro';
 ---
 <BaseLayout title="Обо мне — glepzilla" description="Коротко о Глебе и о том, зачем существует glepzilla.">
@@ -26,12 +27,12 @@ import Tag from '../components/Tag.astro';
 
       <section class="stack">
         <span class="eyebrow eyebrow--faint">Этот сайт сделан на</span>
-        <div><Tag tone="moss">Astro</Tag><Tag tone="sand">TypeScript</Tag><Tag tone="sand">Markdown</Tag><Tag tone="sand">GitHub Pages</Tag></div>
+        <div><Tag tone="moss">Astro</Tag><Tag tone="sand">TypeScript</Tag><Tag tone="sand">Markdown</Tag><Tag tone="sand">Docker</Tag><Tag tone="sand">Traefik</Tag></div>
       </section>
 
       <section class="contact">
         <span class="eyebrow eyebrow--faint">Связаться</span>
-        <a class="text-link text-link--paper" href="https://github.com/gl-epka" rel="me noreferrer">github.com/gl-epka →</a>
+        <SocialLinks tone="paper" />
       </section>
     </div>
   </section>
@@ -51,6 +52,7 @@ import Tag from '../components/Tag.astro';
   .principle-grid strong { margin-top: 8px; color: var(--gz-ink-900); }
   .principle-grid p { margin: 6px 0 0; color: var(--gz-ink-500); font-size: 0.8rem; line-height: 1.55; }
   .stack > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .contact { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-  @media (max-width: 680px) { .about-page { padding-top: 42px; } header { align-items: flex-start; } header img { width: 82px; height: 82px; } .principle-grid { grid-template-columns: 1fr; } .contact { align-items: flex-start; flex-direction: column; gap: 10px; } }
+  .contact { display: flex; justify-content: space-between; align-items: center; gap: 28px; }
+  .contact :global(.social-links) { justify-content: flex-end; }
+  @media (max-width: 680px) { .about-page { padding-top: 42px; } header { align-items: flex-start; } header img { width: 82px; height: 82px; } .principle-grid { grid-template-columns: 1fr; } .contact { align-items: flex-start; flex-direction: column; gap: 12px; } .contact :global(.social-links) { justify-content: flex-start; } }
 </style>

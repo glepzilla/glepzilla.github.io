@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostRow from '../components/PostRow.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import Tag from '../components/Tag.astro';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -39,7 +40,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
       </a>
       <div class="dark-tile contacts">
         <span class="eyebrow eyebrow--faint">Где меня найти</span>
-        <p><a class="text-link" href="https://github.com/gl-epka" rel="me noreferrer">github / @gl-epka</a></p>
+        <SocialLinks compact />
       </div>
     </div>
   </section>
@@ -88,7 +89,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .about-card strong { font-family: var(--gz-font-display); font-size: 1.3rem; font-weight: 500; line-height: 1.35; }
   .about-card small { margin-top: 6px; color: var(--gz-sage-200); opacity: 0.8; }
   .contacts { padding: 23px 28px; transform: rotate(-0.8deg); }
-  .contacts p { margin: 8px 0 0; }
+  .contacts :global(.social-links) { margin-top: 11px; }
   .projects { padding-top: 86px; }
   .section-line { margin-bottom: 22px; }
   .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }

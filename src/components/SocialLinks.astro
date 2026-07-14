@@ -1,0 +1,35 @@
+---
+interface Props {
+  tone?: 'dark' | 'paper';
+  compact?: boolean;
+}
+
+const { tone = 'dark', compact = false } = Astro.props;
+const profiles = [
+  { label: 'ИТД', href: 'https://xn--d1ah4a.com/@gl_epka' },
+  { label: 'Pinterest', href: 'https://pin.it/1SE4BPSSJ' },
+  { label: 'GitHub', href: 'https://github.com/gl-epka' },
+  { label: 'Telegram', href: 'https://t.me/gl_epka' }
+];
+---
+
+<ul class:list={['social-links', `social-links--${tone}`, { 'social-links--compact': compact }]} aria-label="Профили Глеба">
+  {profiles.map((profile) => (
+    <li>
+      <a href={profile.href} target="_blank" rel="me noopener noreferrer">
+        {profile.label} <span aria-hidden="true">→</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .social-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; }
+  .social-links a { font-weight: 600; text-decoration: none; transition: color 150ms ease; }
+  .social-links--dark a { color: var(--gz-link-on-dark); }
+  .social-links--dark a:hover { color: var(--gz-moss-400); }
+  .social-links--paper a { color: var(--gz-link-on-paper); }
+  .social-links--paper a:hover { color: var(--gz-moss-600); }
+  .social-links--compact { gap: 5px 14px; }
+  .social-links--compact a { font-size: 0.76rem; }
+</style>
