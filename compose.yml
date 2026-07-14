@@ -5,6 +5,7 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=16m,mode=1777
+      - /var/cache/nginx:rw,noexec,nosuid,size=16m,mode=1777
     cap_drop: [ALL]
     security_opt:
       - no-new-privileges:true
