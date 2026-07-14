@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Tag from '../components/Tag.astro';
 ---
 <BaseLayout title="Проекты — glepzilla" description="Проекты Глеба: рабочие, личные и экспериментальные.">
-  <section class="projects-page container">
+  <section class="projects-page container" data-reveal>
     <h1 class="section-heading">Проекты<span class="title-dot">.</span></h1>
     <p class="page-intro">То, что я делал руками — от небольших экспериментов до вещей, которыми пользуются другие.</p>
 
@@ -33,7 +33,8 @@ import Tag from '../components/Tag.astro';
 <style>
   .projects-page { padding-top: 65px; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 42px; }
-  .project { min-height: 390px; display: flex; flex-direction: column; padding: 36px; }
+  .project { min-height: 390px; display: flex; flex-direction: column; padding: 36px; transition: translate var(--gz-motion-base) var(--gz-ease-out), scale var(--gz-motion-base) var(--gz-ease-out), box-shadow var(--gz-motion-base) ease; }
+  .project:hover { translate: 0 -6px; scale: 1.01; }
   .project--featured { transform: rotate(-0.7deg); }
   .project--site { transform: rotate(0.8deg) translateY(12px); }
   .project-top, .project-bottom { display: flex; justify-content: space-between; align-items: center; gap: 18px; }

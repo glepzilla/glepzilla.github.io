@@ -25,7 +25,8 @@ const profiles = [
 
 <style>
   .social-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; }
-  .social-links a { font-weight: 600; text-decoration: none; transition: color 150ms ease; }
+  .social-links a { display: inline-flex; font-weight: 600; text-decoration: none; transition: color var(--gz-motion-fast) ease, translate var(--gz-motion-fast) var(--gz-ease-out); }
+  .social-links a:hover { translate: 3px -1px; }
   .social-links--dark a { color: var(--gz-link-on-dark); }
   .social-links--dark a:hover { color: var(--gz-moss-400); }
   .social-links--paper a { color: var(--gz-link-on-paper); }

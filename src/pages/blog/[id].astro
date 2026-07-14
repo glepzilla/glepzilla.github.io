@@ -12,7 +12,7 @@ const { Content } = await render(post);
 const published = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(post.data.published);
 ---
 <BaseLayout title={`${post.data.title} — glepzilla`} description={post.data.description} article>
-  <article class="post container">
+  <article class="post container" data-reveal>
     <a class="back text-link" href="/blog/">← ко всем постам</a>
     <div class="paper-card sheet">
       <div class="meta">

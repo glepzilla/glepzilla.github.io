@@ -8,7 +8,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
 ---
 <BaseLayout title="Блог — glepzilla" description="Заметки Глеба о проектах, инструментах и жизни в интернете.">
-  <section class="blog-page container">
+  <section class="blog-page container" data-reveal>
     <h1 class="section-heading">Блог<span class="title-dot">.</span></h1>
     <p class="page-intro">Пишу, когда есть что сказать. Без расписания.</p>
 
@@ -60,8 +60,9 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
 <style>
   .blog-page { max-width: 940px; padding-top: 65px; }
   .filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 30px 0 28px; }
-  .filter { padding: 7px 14px; border: 1px solid var(--gz-border-tile); border-radius: var(--gz-radius-pill); background: transparent; color: var(--gz-sage-300); font-family: var(--gz-font-mono); font-size: 0.72rem; cursor: pointer; transition: 150ms ease; }
-  .filter:hover { border-color: var(--gz-moss-400); color: var(--gz-moss-400); }
+  .filter { padding: 7px 14px; border: 1px solid var(--gz-border-tile); border-radius: var(--gz-radius-pill); background: transparent; color: var(--gz-sage-300); font-family: var(--gz-font-mono); font-size: 0.72rem; cursor: pointer; transition: color var(--gz-motion-fast) ease, border-color var(--gz-motion-fast) ease, background var(--gz-motion-fast) ease, translate var(--gz-motion-fast) var(--gz-ease-out), scale var(--gz-motion-fast) var(--gz-ease-out); }
+  .filter:hover { border-color: var(--gz-moss-400); color: var(--gz-moss-400); translate: 0 -2px; }
+  .filter:active { scale: 0.96; }
   .filter.active { border-color: var(--gz-moss-400); background: var(--gz-moss-400); color: var(--gz-forest-900); font-weight: 700; }
   .post-list { padding: 30px 36px; transform: rotate(-0.45deg); }
   .empty { margin: 0; padding: 25px 0 5px; color: var(--gz-ink-500); }
