@@ -1,10 +1,15 @@
 ---
 const drops = [
-  { x: '7%', delay: '-19s', duration: '31s', length: '22px', drift: '-4px' },
-  { x: '24%', delay: '-7s', duration: '27s', length: '30px', drift: '3px' },
-  { x: '47%', delay: '-23s', duration: '34s', length: '18px', drift: '-2px' },
-  { x: '72%', delay: '-11s', duration: '29s', length: '26px', drift: '4px' },
-  { x: '91%', delay: '-3s', duration: '37s', length: '20px', drift: '-3px' }
+  { x: '5%', delay: '-2s', duration: '14s', length: '30px', drift: '-6px' },
+  { x: '15%', delay: '-11s', duration: '17s', length: '22px', drift: '4px' },
+  { x: '27%', delay: '-7s', duration: '13s', length: '35px', drift: '-3px' },
+  { x: '39%', delay: '-16s', duration: '19s', length: '25px', drift: '5px' },
+  { x: '52%', delay: '-4s', duration: '15s', length: '32px', drift: '-4px' },
+  { x: '64%', delay: '-13s', duration: '16s', length: '20px', drift: '3px' },
+  { x: '74%', delay: '-8s', duration: '12s', length: '38px', drift: '-5px' },
+  { x: '83%', delay: '-18s', duration: '18s', length: '27px', drift: '4px' },
+  { x: '91%', delay: '-6s', duration: '14s', length: '33px', drift: '-3px' },
+  { x: '97%', delay: '-12s', duration: '20s', length: '23px', drift: '5px' }
 ];
 ---
 
@@ -77,13 +82,13 @@ const drops = [
 </div>
 
 <style>
-  :global(body.article-page) {
+  :global(body.atlas-page) {
     background:
       radial-gradient(circle at 12% 24%, rgba(82, 111, 59, 0.22), transparent 34rem),
       radial-gradient(circle at 86% 62%, rgba(122, 91, 34, 0.1), transparent 31rem),
       linear-gradient(145deg, #10190b 0%, #15210f 45%, #111a0d 100%);
   }
-  :global(body.article-page > main), :global(body.article-page > .footer) { position: relative; z-index: 2; }
+  :global(body.atlas-page > main), :global(body.atlas-page > .footer) { position: relative; z-index: 2; }
   .article-atmosphere { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; contain: strict; }
   .article-atmosphere::before { content: ''; position: absolute; inset: 0; opacity: 0.16; background-image: repeating-linear-gradient(104deg, transparent 0 46px, rgba(211, 220, 190, 0.035) 47px, transparent 48px 92px); mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent); }
   .article-atmosphere::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 190px 65px rgba(3, 8, 2, 0.42); }
@@ -100,14 +105,15 @@ const drops = [
   .specimen--sprig { right: clamp(-112px, -5vw, -45px); top: 7vh; width: clamp(190px, 20vw, 310px); rotate: 6deg; }
   .specimen--mushroom { right: clamp(-62px, 1vw, 34px); bottom: 3vh; width: clamp(150px, 15vw, 230px); rotate: -2deg; opacity: 0.72; }
   .rain { position: absolute; inset: 0; }
-  .rain-drop { position: absolute; left: var(--drop-x); top: calc(-1 * var(--drop-length)); width: 1px; height: var(--drop-length); opacity: 0; background: linear-gradient(to bottom, transparent, rgba(211, 225, 202, 0.46)); filter: drop-shadow(0 0 2px rgba(211, 225, 202, 0.2)); transform: rotate(8deg); }
-  .rain-drop::after { content: ''; position: absolute; left: -1px; bottom: -2px; width: 3px; height: 4px; border-radius: 50% 50% 58% 42%; background: rgba(211, 225, 202, 0.27); }
-  :global(.motion-ready) .rain-drop { animation: rare-rain var(--drop-duration) linear var(--drop-delay) infinite; }
-  @keyframes rare-rain {
-    0%, 81% { opacity: 0; translate: 0 -8vh; }
-    82% { opacity: 0.08; }
-    83.5% { opacity: 0.42; }
-    87% { opacity: 0; translate: var(--drop-drift) 112vh; }
+  .rain-drop { position: absolute; left: var(--drop-x); top: calc(-1 * var(--drop-length)); width: 1px; height: var(--drop-length); opacity: 0; background: linear-gradient(to bottom, transparent, rgba(221, 233, 213, 0.62)); filter: drop-shadow(0 0 3px rgba(211, 225, 202, 0.3)); mix-blend-mode: screen; transform: rotate(8deg); }
+  .rain-drop::after { content: ''; position: absolute; left: -1px; bottom: -2px; width: 3px; height: 5px; border-radius: 50% 50% 58% 42%; background: rgba(221, 233, 213, 0.42); }
+  :global(.motion-ready) .rain-drop { animation: quiet-rain var(--drop-duration) linear var(--drop-delay) infinite; }
+  @keyframes quiet-rain {
+    0%, 69% { opacity: 0; translate: 0 -10vh; }
+    70% { opacity: 0.1; }
+    72% { opacity: 0.58; }
+    78% { opacity: 0.38; }
+    80% { opacity: 0; translate: var(--drop-drift) 112vh; }
     100% { opacity: 0; translate: var(--drop-drift) 112vh; }
   }
   @media (max-width: 1080px) {

@@ -44,9 +44,9 @@ const imageUrl = new URL(image, Astro.site);
       }
     </script>
   </head>
-  <body class:list={{ 'article-page': article }}>
+  <body class:list={['atlas-page', { 'article-page': article }]}>
     <a class="skip-link" href="#content">К содержанию</a>
-    {article && <ArticleAtmosphere />}
+    <ArticleAtmosphere />
     <SiteHeader />
     <main id="content"><slot /></main>
     <SiteFooter />
