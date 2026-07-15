@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import ArticleAtmosphere from '../components/ArticleAtmosphere.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -43,8 +44,9 @@ const imageUrl = new URL(image, Astro.site);
       }
     </script>
   </head>
-  <body>
+  <body class:list={{ 'article-page': article }}>
     <a class="skip-link" href="#content">К содержанию</a>
+    {article && <ArticleAtmosphere />}
     <SiteHeader />
     <main id="content"><slot /></main>
     <SiteFooter />

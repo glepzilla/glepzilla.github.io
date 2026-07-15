@@ -1,0 +1,126 @@
+---
+const drops = [
+  { x: '7%', delay: '-19s', duration: '31s', length: '22px', drift: '-4px' },
+  { x: '24%', delay: '-7s', duration: '27s', length: '30px', drift: '3px' },
+  { x: '47%', delay: '-23s', duration: '34s', length: '18px', drift: '-2px' },
+  { x: '72%', delay: '-11s', duration: '29s', length: '26px', drift: '4px' },
+  { x: '91%', delay: '-3s', duration: '37s', length: '20px', drift: '-3px' }
+];
+---
+
+<div class="article-atmosphere" aria-hidden="true">
+  <div class="atlas-glow atlas-glow--moss"></div>
+  <div class="atlas-glow atlas-glow--amber"></div>
+
+  <figure class="specimen specimen--fern">
+    <svg viewBox="0 0 240 520" role="presentation">
+      <path class="stem" d="M120 494C111 415 112 340 121 269C130 197 139 126 126 37" />
+      <g class="leaf-lines">
+        <path d="M119 448C88 432 62 408 39 377M117 431C87 421 60 403 31 378" />
+        <path d="M115 407C78 388 52 359 30 327M116 390C80 378 53 356 22 327" />
+        <path d="M116 363C78 342 52 312 35 276M118 345C79 331 52 307 27 277" />
+        <path d="M120 318C82 296 60 266 46 230M122 299C88 286 60 261 39 231" />
+        <path d="M124 273C92 253 70 225 59 193M126 254C96 243 72 220 52 194" />
+        <path d="M129 227C101 208 83 184 73 155M131 210C105 199 84 178 67 156" />
+        <path d="M133 183C111 168 96 147 87 121M135 168C115 159 98 141 82 122" />
+        <path d="M136 142C119 129 109 112 101 91M137 128C123 121 111 106 97 92" />
+        <path d="M119 448C148 428 174 403 198 371M118 430C149 417 178 398 207 369" />
+        <path d="M116 407C154 386 181 357 207 322M117 389C155 375 184 352 216 320" />
+        <path d="M116 363C154 340 181 307 201 272M118 344C157 328 184 302 211 270" />
+        <path d="M120 318C158 294 180 263 196 226M122 299C158 283 185 257 204 224" />
+        <path d="M124 273C157 251 179 222 191 188M126 254C158 240 181 216 198 186" />
+        <path d="M129 227C157 207 176 181 185 151M131 210C159 197 179 176 191 149" />
+        <path d="M133 183C156 166 170 144 178 117M135 168C157 157 173 138 183 115" />
+        <path d="M136 142C153 128 163 109 169 88M137 128C153 119 165 103 173 86" />
+      </g>
+      <path class="root" d="M120 494c-22 2-37 10-50 22m50-22c18 2 33 9 46 21m-46-21c-8 9-13 17-15 25" />
+    </svg>
+    <figcaption>Pteridium aquilinum · tab. VII</figcaption>
+  </figure>
+
+  <figure class="specimen specimen--sprig">
+    <svg viewBox="0 0 300 410" role="presentation">
+      <path class="stem" d="M42 379C98 324 133 266 159 201C180 149 198 89 245 35" />
+      <g class="leaves">
+        <path d="M84 333C48 322 27 291 34 260C70 266 92 293 84 333Z" />
+        <path d="M111 296C145 289 168 263 166 232C132 234 109 258 111 296Z" />
+        <path d="M132 254C98 242 81 215 88 185C121 192 140 219 132 254Z" />
+        <path d="M155 209C187 202 207 177 203 149C172 151 151 177 155 209Z" />
+        <path d="M174 164C145 153 130 128 138 103C166 109 181 133 174 164Z" />
+        <path d="M198 113C224 106 240 86 237 62C211 64 195 84 198 113Z" />
+      </g>
+      <g class="veins">
+        <path d="M83 329L39 265M114 292l48-55M131 250l-40-60M158 205l41-51M173 160l-31-52M201 109l32-43" />
+      </g>
+    </svg>
+    <figcaption>Herbarium glepzilla · specimen 03</figcaption>
+  </figure>
+
+  <figure class="specimen specimen--mushroom">
+    <svg viewBox="0 0 260 250" role="presentation">
+      <path class="cap" d="M31 119C42 54 94 22 151 31C203 39 231 74 229 120C173 108 92 108 31 119Z" />
+      <path class="gills" d="M40 117c39-25 137-27 179 1M62 108l-18 9m42-17-17 13m48-18-9 18m40-18 2 18m30-13 13 17" />
+      <path class="stem" d="M105 113C110 148 105 190 86 222C117 236 154 235 181 220C160 184 157 148 162 112" />
+      <path class="ground" d="M48 225c43-11 117-12 164 1M75 236c31-7 76-7 109 0" />
+    </svg>
+    <figcaption>Amanita sp. · field note</figcaption>
+  </figure>
+
+  <div class="rain" role="presentation">
+    {drops.map((drop) => (
+      <i
+        class="rain-drop"
+        style={`--drop-x:${drop.x};--drop-delay:${drop.delay};--drop-duration:${drop.duration};--drop-length:${drop.length};--drop-drift:${drop.drift}`}
+      ></i>
+    ))}
+  </div>
+</div>
+
+<style>
+  :global(body.article-page) {
+    background:
+      radial-gradient(circle at 12% 24%, rgba(82, 111, 59, 0.22), transparent 34rem),
+      radial-gradient(circle at 86% 62%, rgba(122, 91, 34, 0.1), transparent 31rem),
+      linear-gradient(145deg, #10190b 0%, #15210f 45%, #111a0d 100%);
+  }
+  :global(body.article-page > main), :global(body.article-page > .footer) { position: relative; z-index: 2; }
+  .article-atmosphere { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; contain: strict; }
+  .article-atmosphere::before { content: ''; position: absolute; inset: 0; opacity: 0.16; background-image: repeating-linear-gradient(104deg, transparent 0 46px, rgba(211, 220, 190, 0.035) 47px, transparent 48px 92px); mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent); }
+  .article-atmosphere::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 190px 65px rgba(3, 8, 2, 0.42); }
+  .atlas-glow { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.2; }
+  .atlas-glow--moss { left: -10vw; top: 4vh; width: 42vw; height: 55vh; background: #66844b; }
+  .atlas-glow--amber { right: -12vw; bottom: 2vh; width: 38vw; height: 44vh; background: #80612d; opacity: 0.1; }
+  .specimen { position: absolute; margin: 0; color: rgba(203, 213, 181, 0.13); }
+  .specimen svg { display: block; width: 100%; overflow: visible; }
+  .specimen path { fill: none; stroke: currentColor; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .specimen .stem { stroke-width: 1.7; }
+  .specimen .leaves path { fill: rgba(203, 213, 181, 0.018); }
+  .specimen figcaption { margin-top: 8px; color: rgba(203, 213, 181, 0.14); font-family: var(--gz-font-mono); font-size: 0.56rem; letter-spacing: 0.13em; text-align: center; text-transform: uppercase; white-space: nowrap; }
+  .specimen--fern { left: clamp(-105px, -4vw, -38px); top: 13vh; width: clamp(170px, 17vw, 260px); rotate: -3deg; }
+  .specimen--sprig { right: clamp(-112px, -5vw, -45px); top: 7vh; width: clamp(190px, 20vw, 310px); rotate: 6deg; }
+  .specimen--mushroom { right: clamp(-62px, 1vw, 34px); bottom: 3vh; width: clamp(150px, 15vw, 230px); rotate: -2deg; opacity: 0.72; }
+  .rain { position: absolute; inset: 0; }
+  .rain-drop { position: absolute; left: var(--drop-x); top: calc(-1 * var(--drop-length)); width: 1px; height: var(--drop-length); opacity: 0; background: linear-gradient(to bottom, transparent, rgba(211, 225, 202, 0.46)); filter: drop-shadow(0 0 2px rgba(211, 225, 202, 0.2)); transform: rotate(8deg); }
+  .rain-drop::after { content: ''; position: absolute; left: -1px; bottom: -2px; width: 3px; height: 4px; border-radius: 50% 50% 58% 42%; background: rgba(211, 225, 202, 0.27); }
+  :global(.motion-ready) .rain-drop { animation: rare-rain var(--drop-duration) linear var(--drop-delay) infinite; }
+  @keyframes rare-rain {
+    0%, 81% { opacity: 0; translate: 0 -8vh; }
+    82% { opacity: 0.08; }
+    83.5% { opacity: 0.42; }
+    87% { opacity: 0; translate: var(--drop-drift) 112vh; }
+    100% { opacity: 0; translate: var(--drop-drift) 112vh; }
+  }
+  @media (max-width: 1080px) {
+    .specimen--fern { left: -105px; opacity: 0.72; }
+    .specimen--sprig { right: -125px; opacity: 0.68; }
+    .specimen--mushroom { opacity: 0.45; }
+  }
+  @media (max-width: 720px) {
+    .article-atmosphere::before { opacity: 0.08; }
+    .specimen--fern { left: -122px; top: 18vh; width: 200px; opacity: 0.42; }
+    .specimen--sprig { right: -142px; top: 6vh; width: 210px; opacity: 0.36; }
+    .specimen--mushroom { display: none; }
+    .rain-drop:nth-child(even) { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .rain { display: none; } }
+</style>
