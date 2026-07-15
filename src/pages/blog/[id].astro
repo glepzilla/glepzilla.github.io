@@ -25,7 +25,7 @@ const published = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'lon
       <div class="prose"><Content /></div>
       <footer class="post-footer">
         <img src="/logo.png" width="52" height="52" alt="" />
-        <div><strong>Глеб</strong><span>пишу, делаю, иногда доделываю</span></div>
+        <strong>Глеб</strong>
         <a class="text-link text-link--paper" href="https://github.com/gl-epka" rel="me noreferrer">написать в GitHub →</a>
       </footer>
     </div>
@@ -41,8 +41,7 @@ const published = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'lon
   .lead { margin: 0 0 40px; color: var(--gz-ink-500); font-size: 1.05rem; line-height: 1.65; }
   .post-footer { display: flex; align-items: center; gap: 15px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--gz-paper-300); color: var(--gz-ink-500); }
   .post-footer img { flex: none; width: 52px; height: 52px; border-radius: 50%; }
-  .post-footer div { display: flex; flex-direction: column; font-size: 0.75rem; line-height: 1.5; }
-  .post-footer strong { color: var(--gz-ink-900); }
+  .post-footer strong { color: var(--gz-ink-900); font-size: 0.75rem; }
   .post-footer a { margin-left: auto; font-size: 0.78rem; }
   @media (max-width: 600px) { .post { padding-top: 40px; } .post-footer { align-items: flex-start; flex-wrap: wrap; } .post-footer a { width: 100%; margin: 4px 0 0; } }
 </style>

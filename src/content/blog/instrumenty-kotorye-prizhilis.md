@@ -1,16 +1,16 @@
 ---
-title: «Инструменты, которые прижились»
-description: Небольшая ревизия принципов, по которым инструменты остаются в ежедневной работе.
+title: Lorem Ipsum Dolor
+description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 published: 2026-06-02
-tags: [инструменты, процессы]
+tags: [lorem, ipsum]
 ---
 
-Каждый новый инструмент обещает сэкономить время. На практике время часто уходит на перенос данных, настройку и попытки помнить, где теперь лежит нужная вещь.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris fermentum nibh vel sem tempor, sed varius massa mollis.
 
-У меня приживаются инструменты, которые соответствуют трём условиям: быстро открываются, не запирают данные внутри себя и не требуют отдельного ритуала обслуживания.
+Vivamus ligula nisi, mollis sit amet lacus ut, finibus volutpat massa. Curabitur vel nisi varius, aliquam erat.
 
-## Формат важнее приложения
+## Mauris Tempor
 
-Обычные текстовые файлы переживают смену редакторов. Git-репозиторий переживает смену хостинга. Markdown можно прочитать даже без сборщика сайта. Это не делает стек модным, зато делает его спокойным.
+Quisque faucibus nibh id dui molestie, at placerat felis finibus. Nullam vitae ligula nisi. Sed ac sem vel erat volutpat aliquam.
 
-Поэтому этот блог устроен именно так. Каждая запись — файл с несколькими полями в начале. Чтобы опубликовать следующую, достаточно скопировать соседнюю и начать писать.
+Aenean sit amet massa sed nibh porttitor tempor. Proin euismod, dui non aliquet mattis, ligula metus finibus arcu.

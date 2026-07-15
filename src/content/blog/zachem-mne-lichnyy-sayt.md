@@ -1,21 +1,21 @@
 ---
-title: «Зачем мне вообще личный сайт»
-description: Про собственное место в сети, где идеи могут расти в своём темпе.
+title: Vivamus Ligula Nisi
+description: Vivamus ligula nisi, mollis sit amet lacus ut, finibus volutpat.
 published: 2026-07-12
-tags: [мета, сайт]
+tags: [vivamus, ligula]
 featured: true
 ---
 
-Соцсети хорошо умеют показывать новое, но плохо хранят важное. Запись быстро уезжает вниз, ссылка теряется, а старый проект через год приходится объяснять заново. Личный сайт решает эту проблему простым способом: у вещей появляется постоянное место.
+Vivamus ligula nisi, mollis sit amet lacus ut, finibus volutpat massa. Curabitur vel nisi varius, aliquam erat. Quisque faucibus nibh id dui molestie.
 
-## Дом, а не витрина
+## Curabitur Vel Nisi
 
-Мне нравится думать о сайте не как о портфолио, которое однажды нужно «закончить», а как о доме. Здесь можно переставлять мебель, выращивать тексты и оставлять незавершённые мысли. Не всё обязано быть большим материалом — иногда достаточно заметки, ссылки или маленького эксперимента.
+Quisque faucibus nibh id dui molestie, at placerat felis finibus. Nullam vitae ligula nisi. Sed ac sem vel erat volutpat aliquam.
 
-> Хороший личный сайт не просит постоянно производить контент. Он просто ждёт, когда появится что сохранить.
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
-Технически всё тоже намеренно просто: страницы собираются из Markdown-файлов, хранятся в Git и публикуются автоматически. Чем меньше обслуживания требует система, тем больше шансов, что я действительно буду писать.
+Aenean sit amet massa sed nibh porttitor tempor. Proin euismod, dui non aliquet mattis, ligula metus finibus arcu.
 
-## Что будет дальше
+## Aenean Sit Amet
 
-Пока здесь есть блог, проекты и короткая страница обо мне. Со временем появятся заметки покороче, архив полезных находок и, возможно, английская версия. Без расписания — зато своими руками.
+Fusce commodo nisi vel turpis molestie, non bibendum ligula placerat. Donec sed massa at sem convallis tempor.
