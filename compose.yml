@@ -1,6 +1,6 @@
 services:
   site:
-    image: ghcr.io/glepzilla/glepzilla.github.io:latest
+    image: ghcr.io/glepzilla/glepzilla.github.io:${IMAGE_TAG:-latest}
     restart: unless-stopped
     read_only: true
     tmpfs:
