@@ -9,22 +9,28 @@ interface Props {
   description?: string;
   image?: string;
   article?: boolean;
+  /** Skip SiteHeader, SiteFooter and ArticleAtmosphere; render only the slot. */
+  bare?: boolean;
 }
 const {
   title = 'glepzilla — дом Глеба в интернете',
   description = 'Тексты, проекты и всё остальное, что не помещается в соцсети.',
   image = '/logo.png',
-  article = false
+  article = false,
+  bare = false
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = new URL(image, Astro.site);
+// The homepage (bare) is a near-black terminal page (#070906), distinct
+// from the site's usual forest-green (#141f0e, --gz-bg in global.css).
+const themeColor = bare ? '#070906' : '#141f0e';
 ---
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class:list={[{ 'bare-page': bare }]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="#141f0e" />
+    <meta name="theme-color" content={themeColor} />
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="canonical" href={canonical} />
@@ -44,12 +50,12 @@ const imageUrl = new URL(image, Astro.site);
       }
     </script>
   </head>
-  <body class:list={['atlas-page', { 'article-page': article }]}>
+  <body class:list={[{ 'atlas-page': !bare, 'article-page': article, 'bare-page': bare }]}>
     <a class="skip-link" href="#content">К содержанию</a>
-    <ArticleAtmosphere />
-    <SiteHeader />
+    {!bare && <ArticleAtmosphere />}
+    {!bare && <SiteHeader />}
     <main id="content"><slot /></main>
-    <SiteFooter />
+    {!bare && <SiteFooter />}
     <script>
       const revealItems = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
 
