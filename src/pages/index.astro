@@ -1,121 +1,494 @@
 ---
+// Homepage — Claude Design "Glepzilla Terminal", artboard 2a (figlet wordmark
+// + live aurora background). See src/lib/ds-backgrounds/ for the vendored
+// background engine and the trailing <script> below for the wordmark/typing
+// behaviour, ported from the design file's behaviour comment.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PostRow from '../components/PostRow.astro';
-import SocialLinks from '../components/SocialLinks.astro';
-import Tag from '../components/Tag.astro';
+import { FRAMES } from '../lib/wordmark';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const latestPosts = posts.slice(0, 3);
+
+function two(n: number): string {
+  return String(n).padStart(2, '0');
+}
+function formatDM(date: Date): string {
+  return `${two(date.getUTCDate())}.${two(date.getUTCMonth() + 1)}`;
+}
+function formatDMY(date: Date): string {
+  return `${formatDM(date)}.${date.getUTCFullYear()}`;
+}
+/** Russian plural forms: 1 запись, 2-4 записи, 0/5-20 записей. */
+function pluralizeRu(n: number, one: string, few: string, many: string): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 14) return many;
+  if (mod10 === 1) return one;
+  if (mod10 >= 2 && mod10 <= 4) return few;
+  return many;
+}
+
+const postCount = posts.length;
+const postWord = pluralizeRu(postCount, 'запись', 'записи', 'записей');
+const newestPost = posts[0];
+const summaryLine = newestPost
+  ? `${postCount} ${postWord} · последняя ${formatDMY(newestPost.data.published)}`
+  : `${postCount} ${postWord}`;
+
+const year = new Date().getFullYear();
+
+const COMMAND = 'ls -lt ~/blog | head -3';
+
+interface ProjectEntry {
+  num: string;
+  name: string;
+  desc: string;
+  tags: string;
+  href: string;
+  external: boolean;
+}
+const projects: ProjectEntry[] = [
+  {
+    num: '01',
+    name: 'Shiki Cards Bot',
+    desc: 'Бот, который собирает карточки из аниме-базы.',
+    tags: 'telegram · open source',
+    href: 'https://github.com/glepzilla/shiki-cards-bot',
+    external: true
+  },
+  {
+    num: '02',
+    name: 'Этот сайт',
+    desc: 'Статика на Astro и папка с markdown-файлами.',
+    tags: 'astro · markdown',
+    href: 'https://github.com/glepzilla/glepzilla.github.io',
+    external: true
+  },
+  {
+    num: '03',
+    name: 'Записки на полях',
+    desc: 'Короткие тексты между большими проектами.',
+    tags: 'тексты',
+    href: '/blog/',
+    external: false
+  }
+];
+
+interface ContactEntry {
+  name: string;
+  href: string;
+}
+const contacts: ContactEntry[] = [
+  { name: 'Pinterest', href: 'https://pin.it/1SE4BPSSJ' },
+  { name: 'GitHub', href: 'https://github.com/gl-epka' },
+  { name: 'Telegram', href: 'https://t.me/gl_epka' }
+];
+
+// Small figlet "gz" nav mark — static, not part of the wordmark morph cycle.
+const NAV_MARK = '  __ _ ____\n / _` |_  /\n| (_| |/ / \n \\__, /___|\n |___/     ';
+
+// Figlet "glepzilla" (STANDARD face) — server-rendered so the wordmark <h1>
+// is correct with no JS. FRAMES comes from ../lib/wordmark, the single
+// source of truth the client script below imports too, so the two can
+// never drift apart.
+const wordmarkInitial = FRAMES[0].join('\n');
 ---
-<BaseLayout>
-  <section class="hero container" data-reveal>
-    <div class="ligature" aria-hidden="true">gz</div>
-    <div class="hero-copy">
-      <h1 class="display-title">Мой дом<br />в интернете<span class="title-dot">.</span></h1>
-      <p class="intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris fermentum nibh vel sem tempor.</p>
-    </div>
-  </section>
 
-  <section class="desk container" aria-label="Последние материалы и контакты">
-    <div class="paper-card latest" data-reveal="left">
-      <div class="card-head">
-        <span class="eyebrow eyebrow--paper">Блог / свежее</span>
-        <a class="text-link text-link--paper" href="/blog/">всё →</a>
-      </div>
-      {posts.slice(0, 3).map((post) => (
-        <PostRow href={`/blog/${post.id}/`} title={post.data.title} date={post.data.published} />
-      ))}
-    </div>
+<BaseLayout bare>
+  <div class="terminal-page">
+    <div class="terminal-shell">
+      <div id="terminal-bg" class="terminal-bg" aria-hidden="true"></div>
 
-    <div class="side-stack" data-reveal="right" style="--reveal-delay: 120ms">
-      <a class="about-card" href="/about/">
-        <img src="/logo.png" width="82" height="82" alt="" />
-        <span>
-          <strong>Кто я и чем занимаюсь →</strong>
-          <small class="eyebrow">Обо мне</small>
+      <nav class="terminal-nav" aria-label="Основная навигация">
+        <pre class="gz-mark" role="img" aria-label="glepzilla"><span aria-hidden="true">{NAV_MARK}</span></pre>
+        <span class="nav-links">
+          <a href="/blog/">Блог</a>
+          <a href="/projects/">Проекты</a>
+          <a href="/about/">Обо мне</a>
+          <span class="lang">RU/EN</span>
         </span>
-      </a>
-      <div class="dark-tile contacts">
-        <span class="eyebrow eyebrow--faint">Где меня найти</span>
-        <SocialLinks compact />
-      </div>
-    </div>
-  </section>
+      </nav>
 
-  <section class="projects container" data-reveal>
-    <div class="section-line">
-      <span class="eyebrow eyebrow--moss">Проекты</span>
-      <a class="text-link" href="/projects/">все проекты →</a>
+      <div class="terminal-hero">
+        <div class="hero-col">
+          <h1 class="wordmark" aria-label="glepzilla"><span id="wordmark-art" aria-hidden="true">{wordmarkInitial}</span></h1>
+        </div>
+
+        <section class="terminal-card" aria-label="Последние записи блога">
+          <div class="card-titlebar">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="dot" aria-hidden="true"></span>
+            <span class="dot dot--accent" aria-hidden="true"></span>
+            <span class="card-path">gleb@glepzilla — ~/blog</span>
+          </div>
+          <div class="card-body">
+            <div class="prompt-line"><span class="prompt-sign">%</span> <span id="typed-cmd">{COMMAND}</span><span class="cursor" aria-hidden="true"></span></div>
+            <div class="ls-total">total 14</div>
+            {latestPosts.map((post) => (
+              <a class="ls-row" href={`/blog/${post.id}/`}>
+                <span class="ls-date">{formatDM(post.data.published)}</span>
+                <span class="ls-name">{post.id}.md</span>
+              </a>
+            ))}
+            <div class="ls-summary">{summaryLine}</div>
+          </div>
+        </section>
+      </div>
+
+      <section class="terminal-projects" aria-label="Проекты">
+        {projects.map((project) => (
+          <a class="project-card" href={project.href} rel={project.external ? 'noreferrer' : undefined}>
+            <span class="project-num">{project.num}</span>
+            <span class="project-name">{project.name}</span>
+            <span class="project-desc">{project.desc}</span>
+            <span class="project-tags">{project.tags}</span>
+          </a>
+        ))}
+      </section>
+
+      <footer class="terminal-footer">
+        <span>© {year} glepzilla</span>
+        <span class="contacts">
+          {contacts.map((contact) => (
+            <a href={contact.href} target="_blank" rel="me noopener noreferrer">{contact.name} →</a>
+          ))}
+        </span>
+      </footer>
     </div>
-    <div class="project-grid">
-      <a class="dark-tile project-card project-card--one" href="https://github.com/glepzilla/shiki-cards-bot" rel="noreferrer" data-reveal style="--reveal-delay: 40ms">
-        <span class="number">01</span>
-        <div><h2>Shiki Cards Bot →</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div>
-        <div class="tags"><Tag>telegram</Tag><Tag>open source</Tag></div>
-      </a>
-      <a class="dark-tile project-card project-card--two" href="https://github.com/glepzilla/glepzilla.github.io" rel="noreferrer" data-reveal style="--reveal-delay: 120ms">
-        <span class="number">02</span>
-        <div><h2>Этот сайт →</h2><p>Mauris fermentum nibh vel sem tempor, sed varius massa.</p></div>
-        <div class="tags"><Tag>astro</Tag><Tag>markdown</Tag></div>
-      </a>
-      <a class="dark-tile project-card project-card--three" href="/blog/" data-reveal style="--reveal-delay: 200ms">
-        <span class="number">03</span>
-        <div><h2>Записки на полях →</h2><p>Vivamus ligula nisi, mollis sit amet lacus ut, finibus.</p></div>
-        <div class="tags"><Tag>тексты</Tag></div>
-      </a>
-    </div>
-  </section>
+  </div>
+
+  <script>
+    // cycleWordmark is ported from the design file's behaviour comment
+    // (design-2a-spec.html) as written; componentDidMount's typing +
+    // background wiring are adapted from the design tool's tiny component
+    // runtime to plain DOM/timer calls. FRAMES/W/H/NOISE come from
+    // ../lib/wordmark, the single source of truth the page's frontmatter
+    // imports too (for the SSR'd FRAMES[0]), so the two can never drift.
+    import { FRAMES, W, H, NOISE } from '../lib/wordmark';
+
+    const COMMAND = 'ls -lt ~/blog | head -3';
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    function type(el: Element, text: string, speed: number, delay = 0) {
+      el.textContent = '';
+      let i = 0;
+      const step = () => {
+        i += 1;
+        el.textContent = text.slice(0, i);
+        if (i < text.length) timers.push(setTimeout(step, speed + Math.random() * speed));
+      };
+      timers.push(setTimeout(step, 350 + delay));
+    }
+
+    /** Перебор символов: одно начертание рассыпается в шум и собирается следующим. */
+    function cycleWordmark(el: Element) {
+      const HOLD = 42; // тиков (×60ms) держим набранное слово
+      const MORPH = 14; // тиков идёт перебор
+      let idx = 0;
+      let tick = 0;
+      return setInterval(() => {
+        tick += 1;
+        if (tick <= HOLD) return;
+        const step = tick - HOLD;
+        const from = FRAMES[idx];
+        const to = FRAMES[(idx + 1) % FRAMES.length];
+        if (step > MORPH) {
+          idx = (idx + 1) % FRAMES.length;
+          tick = 0;
+          el.textContent = FRAMES[idx].join('\n');
+          return;
+        }
+        const p = step / MORPH;
+        const rows = [];
+        for (let r = 0; r < H; r += 1) {
+          let line = '';
+          for (let c = 0; c < W; c += 1) {
+            const a = from[r][c];
+            const b = to[r][c];
+            if (a === ' ' && b === ' ') {
+              line += ' ';
+              continue;
+            }
+            if (Math.random() < p * p) line += b;
+            else if (Math.random() < 0.55) line += NOISE[(Math.random() * NOISE.length) | 0];
+            else line += a === ' ' ? b : a;
+          }
+          rows.push(line);
+        }
+        el.textContent = rows.join('\n');
+      }, 60);
+    }
+
+    const typedEl = document.getElementById('typed-cmd');
+    const wordmarkEl = document.getElementById('wordmark-art');
+    const bgHost = document.getElementById('terminal-bg');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!reducedMotion) {
+      if (typedEl) type(typedEl, COMMAND, 34, 900);
+      if (wordmarkEl) cycleWordmark(wordmarkEl);
+    }
+
+    if (bgHost) {
+      import('../lib/ds-backgrounds/index.js')
+        .then(({ createBackground }) => {
+          const s = createBackground(bgHost, { effect: 'aurora', strength: 0.55 });
+          if (s) {
+            // никакого «фонарика» за курсором — фон живёт сам по себе
+            if (s.onPointerMove) window.removeEventListener('pointermove', s.onPointerMove);
+            if (s.onPointerDown) window.removeEventListener('pointerdown', s.onPointerDown);
+          }
+          const c = bgHost.querySelector('canvas');
+          if (c) Object.assign(c.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', display: 'block' });
+        })
+        .catch((e) => console.warn('background engine unavailable', e));
+    }
+  </script>
 </BaseLayout>
 
 <style>
-  .hero { min-height: 410px; position: relative; display: flex; align-items: center; padding-top: 48px; padding-bottom: 42px; overflow: hidden; }
-  .hero-copy { position: relative; z-index: 2; }
-  .intro { max-width: 520px; margin: 24px 0 0; color: var(--gz-sage-300); font-size: 1.08rem; line-height: 1.65; }
-  .ligature { position: absolute; z-index: 0; right: -32px; top: -82px; color: rgba(143, 175, 106, 0.1); font-family: var(--gz-font-display); font-size: clamp(14rem, 29vw, 22rem); font-weight: 600; line-height: 1; pointer-events: none; user-select: none; animation: ligature-drift 9s ease-in-out infinite; }
-  .desk { position: relative; display: grid; grid-template-columns: minmax(0, 1.22fr) minmax(330px, 0.88fr); align-items: start; }
-  .latest { position: relative; z-index: 2; padding: 32px 36px; transform: rotate(-1.2deg); }
-  .card-head, .section-line { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-  .card-head { margin-bottom: 8px; }
-  .card-head .text-link, .section-line .text-link { font-size: 0.82rem; }
-  .side-stack { position: relative; z-index: 3; display: flex; flex-direction: column; gap: 20px; margin: 36px 0 0 -28px; }
-  .about-card { display: flex; align-items: center; gap: 20px; padding: 27px 30px; transform: rotate(1.6deg); border-radius: 20px; background: var(--gz-moss-600); box-shadow: var(--gz-shadow-tile); color: var(--gz-paper-50); text-decoration: none; transition: background var(--gz-motion-fast) ease, translate var(--gz-motion-base) var(--gz-ease-out), scale var(--gz-motion-base) var(--gz-ease-out), box-shadow var(--gz-motion-base) ease; }
-  .about-card:hover { background: var(--gz-moss-700); translate: 0 -5px; scale: 1.01; box-shadow: 0 30px 68px -20px rgba(0,0,0,0.65); }
-  .about-card img { flex: none; width: 82px; height: 82px; border-radius: 50%; box-shadow: 0 0 0 3px rgba(242, 236, 217, 0.35); }
-  .about-card span { display: flex; flex-direction: column; align-items: flex-start; }
-  .about-card strong { font-family: var(--gz-font-display); font-size: 1.3rem; font-weight: 500; line-height: 1.35; }
-  .about-card small { margin-top: 6px; color: var(--gz-sage-200); opacity: 0.8; }
-  .contacts { padding: 23px 28px; transform: rotate(-0.8deg); }
-  .contacts :global(.social-links) { margin-top: 11px; }
-  .projects { padding-top: 86px; }
-  .section-line { margin-bottom: 22px; }
-  .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .project-card { min-height: 270px; display: flex; flex-direction: column; justify-content: space-between; padding: 27px 29px; text-decoration: none; }
-  .project-card--one { transform: rotate(0.6deg); }
-  .project-card--two { transform: rotate(-0.9deg) translateY(8px); }
-  .project-card--three { transform: rotate(1.1deg); }
-  .project-card:hover { transform: rotate(0) translateY(-3px); }
-  .number { color: var(--gz-text-faint); font-family: var(--gz-font-mono); font-size: 0.7rem; letter-spacing: 0.1em; }
-  .project-card h2 { margin: 0 0 8px; font-family: var(--gz-font-display); font-size: 1.38rem; font-weight: 500; line-height: 1.3; }
-  .project-card p { margin: 0; color: var(--gz-sage-300); font-size: 0.82rem; line-height: 1.55; }
-  .tags { display: flex; flex-wrap: wrap; gap: 7px; }
-  @keyframes ligature-drift { 0%, 100% { translate: 0 0; rotate: 0deg; } 50% { translate: -8px 5px; rotate: -1deg; } }
-  @media (max-width: 900px) {
-    .desk { grid-template-columns: 1fr; }
-    .side-stack { display: grid; grid-template-columns: 1fr 0.8fr; margin: -2px 18px 0; }
-    .project-grid { grid-template-columns: 1fr 1fr; }
-    .project-card:last-child { grid-column: 1 / -1; min-height: 220px; }
+  .terminal-page {
+    background: #070906;
+    color: #eef1e9;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 32px;
   }
-  @media (max-width: 680px) {
-    .hero { min-height: 380px; padding-top: 35px; }
-    .ligature { right: -70px; top: -10px; }
-    .latest { padding: 26px 22px; }
-    .side-stack { display: flex; margin: -4px 8px 0; }
-    .about-card { padding: 22px; }
-    .about-card img { width: 68px; height: 68px; }
-    .projects { padding-top: 66px; }
-    .project-grid { grid-template-columns: 1fr; }
-    .project-card, .project-card:last-child { grid-column: auto; min-height: 230px; }
-    .section-line .text-link { display: none; }
+
+  .terminal-shell {
+    position: relative;
+    overflow: hidden;
+    max-width: 1240px;
+    margin: 0 auto;
+    border-radius: 12px;
+    background: #0b0e0a;
+    border: 1px solid rgba(233, 240, 226, 0.1);
+  }
+  .terminal-shell a { text-decoration: none; }
+
+  .terminal-bg {
+    position: absolute;
+    inset: 0;
+    --ds-canvas-base: #0b0e0a;
+    --ds-canvas-a: #74964a;
+    --ds-canvas-b: #2f5a46;
+    --ds-canvas-c: #b9d977;
+    --ds-canvas-ink: #cdd2c5;
+    opacity: 0.85;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* ── nav ── */
+  .terminal-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 44px;
+    border-bottom: 1px solid rgba(233, 240, 226, 0.08);
+    font-size: 14px;
+  }
+  .gz-mark {
+    margin: 0;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(8px, 1vw, 9.5px);
+    line-height: 1.12;
+    color: #8fbb5f;
+    text-shadow: 0 0 10px rgba(143, 187, 95, 0.5);
+    white-space: pre;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    color: #a8b0a0;
+    font-family: 'Martian Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .nav-links a { color: #a8b0a0; }
+  .nav-links a:hover { color: #b9d977; }
+  .lang { color: #545c4e; }
+
+  /* ── hero ── */
+  .terminal-hero {
+    position: relative;
+    padding: 76px 44px 68px;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 52px;
+    align-items: center;
+  }
+  .hero-col {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    min-width: 0;
+  }
+  .wordmark {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(11px, 1.85vw, 21px);
+    font-weight: 400;
+    line-height: 1.04;
+    color: #8fbb5f;
+    text-shadow: 0 0 18px rgba(143, 187, 95, 0.45), 0 0 46px rgba(143, 187, 95, 0.18);
+    white-space: pre;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+
+  .terminal-card {
+    min-width: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(6, 8, 6, 0.92);
+    border: 1px solid rgba(143, 187, 95, 0.24);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.85);
+  }
+  .card-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    background: rgba(20, 24, 19, 0.9);
+    border-bottom: 1px solid rgba(233, 240, 226, 0.08);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #545c4e; }
+  .dot--accent { background: #8fbb5f; }
+  .card-path { margin-left: 8px; font-size: 12px; color: #737b6c; }
+  .card-body {
+    padding: 22px 22px 26px;
+    font-size: 13.5px;
+    line-height: 1.95;
+    min-height: 250px;
+    overflow-wrap: break-word;
+  }
+  .prompt-line { color: #737b6c; }
+  .prompt-sign { color: #8fbb5f; }
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    vertical-align: -2px;
+    background: #8fbb5f;
+    animation: blink 1.05s step-end infinite;
+  }
+  .ls-total { color: #545c4e; padding-top: 10px; }
+  .ls-row {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    gap: 14px;
+    color: #eef1e9;
+  }
+  .ls-date { color: #4e7030; min-width: 0; }
+  .ls-name { min-width: 0; overflow-wrap: anywhere; }
+  .ls-row:hover .ls-name { color: #b9d977; }
+  .ls-summary { color: #a8b0a0; padding-top: 12px; }
+
+  /* ── projects ── */
+  .terminal-projects {
+    position: relative;
+    padding: 0 44px 40px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 26px;
+    border-radius: 10px;
+    border: 1px solid rgba(233, 240, 226, 0.1);
+    background: rgba(20, 24, 19, 0.62);
+    color: #eef1e9;
+    min-width: 0;
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+  .project-card:hover {
+    border-color: rgba(143, 187, 95, 0.45);
+    background: rgba(38, 51, 27, 0.55);
+  }
+  .project-num {
+    font-family: 'Martian Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: #4e7030;
+    letter-spacing: -0.02em;
+  }
+  .project-name {
+    font-family: Prata, Georgia, serif;
+    font-size: 23px;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.25;
+  }
+  .project-desc {
+    font-family: Literata, Georgia, serif;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: #a8b0a0;
+  }
+  .project-tags {
+    font-family: 'Martian Mono', monospace;
+    font-size: 9.5px;
+    color: #737b6c;
+    letter-spacing: -0.02em;
+    padding-top: 4px;
+    text-transform: uppercase;
+  }
+
+  /* ── footer ── */
+  .terminal-footer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 26px 44px;
+    border-top: 1px solid rgba(233, 240, 226, 0.08);
+    font-family: 'Martian Mono', monospace;
+    font-size: 10px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #737b6c;
+  }
+  .contacts { display: flex; gap: 20px; flex-wrap: wrap; }
+  .contacts a { color: #a8b0a0; }
+  .contacts a:hover { color: #b9d977; }
+
+  /* ── responsive ── */
+  @media (max-width: 900px) {
+    .terminal-page { padding: 20px; }
+    .terminal-nav { flex-wrap: wrap; row-gap: 12px; }
+    .nav-links { flex-wrap: wrap; row-gap: 10px; column-gap: 22px; }
+    .terminal-hero { grid-template-columns: 1fr; gap: 36px; }
+    .terminal-projects { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 700px) {
+    .terminal-page { padding: 12px; }
+    .terminal-nav { padding: 14px 20px; }
+    .terminal-hero { padding: 40px 20px 36px; }
+    .terminal-projects { padding: 0 20px 28px; grid-template-columns: 1fr; }
+    .terminal-footer { padding: 18px 20px; }
   }
 </style>

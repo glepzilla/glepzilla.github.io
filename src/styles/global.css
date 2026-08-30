@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Lora:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Martian+Mono:wght@400;500;700&family=Prata&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Lora:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
 
 :root {
   --gz-forest-950: #0f1709;
@@ -61,6 +61,13 @@ body {
   line-height: 1.7;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
+}
+/* The bare homepage (artboard 2a) is a near-black terminal page, not the
+   site's usual forest green — keeps overscroll/rubber-band from flashing
+   --gz-bg at the top/bottom edges. Scoped to BaseLayout's bare prop only. */
+html.bare-page,
+body.bare-page {
+  background: #070906;
 }
 body::before {
   content: '';
