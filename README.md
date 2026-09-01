@@ -42,8 +42,9 @@ draft: false
 
 - `src/content/blog/` — записи блога;
 - `src/pages/` — страницы сайта;
-- `src/components/` — переиспользуемые компоненты;
-- `src/styles/global.css` — токены и базовые стили из UI kit;
+- `src/layouts/TerminalLayout.astro` — общий каркас «терминала»: окно, фон, навигация и подвал;
+- `src/lib/` — данные сайта (`site.ts`), ASCII-шрифты (`wordmark.ts`, `banner.ts`), помощники дат (`format.ts`) и фоновый движок (`ds-backgrounds/`);
+- `src/styles/terminal.css` — токены и компоненты оформления, `src/styles/global.css` — шрифты и базовые стили;
 - `Dockerfile` и `nginx.conf` — production-образ сайта;
 - `compose.yml` — подключение контейнера к Traefik;
 - `.github/workflows/deploy.yml` — проверка, сборка GHCR-образа и деплой через self-hosted runner.

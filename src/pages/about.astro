@@ -1,58 +1,155 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import SocialLinks from '../components/SocialLinks.astro';
-import Tag from '../components/Tag.astro';
----
-<BaseLayout title="Обо мне — glepzilla" description="Коротко о Глебе и о том, зачем существует glepzilla.">
-  <section class="about-page container" data-reveal>
-    <div class="paper-card sheet">
-      <header>
-        <img src="/logo.png" width="108" height="108" alt="Моховой кайдзю с карандашом — логотип glepzilla" />
-        <div><h1>Привет, я Глеб<span class="title-dot">.</span></h1></div>
-      </header>
+import TerminalLayout from '../layouts/TerminalLayout.astro';
+import { banner } from '../lib/banner';
+import { CONTACTS } from '../lib/site';
 
-      <div class="copy prose">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris fermentum nibh vel sem tempor.</p>
-        <p>Vivamus ligula nisi, mollis sit amet lacus ut, finibus volutpat massa. Curabitur vel nisi varius, aliquam erat.</p>
+const heading = banner('about');
+
+const principles = [
+  {
+    num: '01',
+    title: 'Медленно',
+    text: 'Лучше одна вещь, доведённая до конца, чем пять начатых за выходные.'
+  },
+  {
+    num: '02',
+    title: 'Своими руками',
+    text: 'Свой сервер, свой домен, свои файлы. Так надёжнее — и интереснее.'
+  },
+  {
+    num: '03',
+    title: 'Просто',
+    text: 'Markdown и статика. Чем меньше движущихся частей, тем дольше всё живёт.'
+  }
+];
+
+const stack = ['Astro', 'TypeScript', 'Markdown', 'Docker', 'Traefik', 'GitHub Actions'];
+---
+<TerminalLayout
+  title="Обо мне — glepzilla"
+  description="Коротко о Глебе и о том, зачем существует glepzilla."
+  quietBackground
+>
+  <header class="tm-section page-head" data-reveal>
+    <h1 class="tm-banner"><span class="tm-sr">Обо мне</span><span aria-hidden="true">{heading}</span></h1>
+  </header>
+
+  <section class="tm-section body" data-reveal>
+    <div class="tm-window">
+      <div class="tm-titlebar">
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot tm-dot--accent" aria-hidden="true"></span>
+        <span class="tm-path">gleb@glepzilla — ~</span>
       </div>
 
-      <section class="principles">
-        <span class="eyebrow eyebrow--faint">Что здесь важно</span>
-        <div class="principle-grid">
-          <div><span>01</span><strong>Lorem ipsum</strong><p>Dolor sit amet, consectetur adipiscing elit.</p></div>
-          <div><span>02</span><strong>Mauris tempor</strong><p>Fermentum nibh vel sem, sed varius massa.</p></div>
-          <div><span>03</span><strong>Vivamus ligula</strong><p>Mollis sit amet lacus ut, finibus volutpat.</p></div>
+      <div class="tm-body sheet">
+        <div class="tm-prompt"><span class="tm-prompt-sign">%</span> whoami</div>
+        <div class="whoami">
+          <img src="/logo.png" width="92" height="92" alt="Моховой кайдзю с карандашом — логотип glepzilla" />
+          <div>
+            <p class="name">Глеб</p>
+            <p class="tm-label">gleb · gl_epka · glepzilla</p>
+          </div>
         </div>
-      </section>
 
-      <section class="stack">
-        <span class="eyebrow eyebrow--faint">Этот сайт сделан на</span>
-        <div><Tag tone="moss">Astro</Tag><Tag tone="sand">TypeScript</Tag><Tag tone="sand">Markdown</Tag><Tag tone="sand">Docker</Tag><Tag tone="sand">Traefik</Tag></div>
-      </section>
+        <div class="tm-prose intro">
+          <p>Собираю небольшие штуки: телеграм-ботов, сайты и домашний сервер, на котором всё это живёт. Днём — работа, вечером — полигон для экспериментов.</p>
+          <p>Этот сайт — место, где всё лежит рядом: тексты, проекты и ссылки. Без ленты, без алгоритмов и без чужих правил.</p>
+        </div>
 
-      <section class="contact">
-        <span class="eyebrow eyebrow--faint">Связаться</span>
-        <SocialLinks tone="paper" />
-      </section>
+        <section class="block">
+          <div class="tm-prompt"><span class="tm-prompt-sign">%</span> cat ~/.principles</div>
+          <div class="principles">
+            {principles.map((principle) => (
+              <div class="principle">
+                <span class="tm-project-num">{principle.num}</span>
+                <strong>{principle.title}</strong>
+                <p>{principle.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block">
+          <div class="tm-prompt"><span class="tm-prompt-sign">%</span> stack --list</div>
+          <div class="tags">
+            {stack.map((item) => <span class="tm-tag">{item}</span>)}
+          </div>
+          <p class="note">Сайт собирается в Docker-образ и разворачивается на своём сервере за Traefik. Исходники — <a class="tm-link" href="https://github.com/glepzilla/glepzilla.github.io" target="_blank" rel="noopener noreferrer">на GitHub</a>.</p>
+        </section>
+
+        <section class="block">
+          <div class="tm-prompt"><span class="tm-prompt-sign">%</span> contact --all</div>
+          <ul class="contacts">
+            {CONTACTS.map((contact) => (
+              <li>
+                <a href={contact.href} target="_blank" rel="me noopener noreferrer">
+                  <span class="contact-name">{contact.name}</span>
+                  <span class="contact-handle">{contact.handle}</span>
+                  <span class="contact-arrow" aria-hidden="true">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </div>
   </section>
-</BaseLayout>
+</TerminalLayout>
 
 <style>
-  .about-page { max-width: 920px; padding-top: 60px; }
-  .sheet { padding: clamp(30px, 7vw, 62px); transform: rotate(-0.4deg); }
-  header { display: flex; align-items: center; gap: 26px; margin-bottom: 38px; }
-  header img { flex: none; width: 108px; height: 108px; border-radius: 50%; box-shadow: 0 0 0 3px var(--gz-paper-300); }
-  h1 { margin: 6px 0 0; color: var(--gz-ink-900); font-family: var(--gz-font-display); font-size: clamp(2.25rem, 6vw, 3.3rem); font-weight: 500; line-height: 1.1; }
-  .copy { max-width: 680px; font-size: 1.03rem; }
-  .principles, .stack, .contact { margin-top: 38px; padding-top: 26px; border-top: 1px solid var(--gz-paper-300); }
-  .principle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; margin-top: 20px; }
-  .principle-grid div { display: flex; flex-direction: column; }
-  .principle-grid span { color: var(--gz-moss-600); font-family: var(--gz-font-mono); font-size: 0.68rem; }
-  .principle-grid strong { margin-top: 8px; color: var(--gz-ink-900); }
-  .principle-grid p { margin: 6px 0 0; color: var(--gz-ink-500); font-size: 0.8rem; line-height: 1.55; }
-  .stack > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .contact { display: flex; justify-content: space-between; align-items: center; gap: 28px; }
-  .contact :global(.social-links) { justify-content: flex-end; }
-  @media (max-width: 680px) { .about-page { padding-top: 42px; } header { align-items: flex-start; } header img { width: 82px; height: 82px; } .principle-grid { grid-template-columns: 1fr; } .contact { align-items: flex-start; flex-direction: column; gap: 12px; } .contact :global(.social-links) { justify-content: flex-start; } }
+  .page-head { padding-block: 60px 0; }
+  .body { padding-block: 30px 48px; max-width: 940px; margin-inline: auto; }
+  .sheet { padding: clamp(24px, 5vw, 44px); }
+
+  .whoami { display: flex; align-items: center; gap: 20px; margin: 16px 0 30px; }
+  .whoami img { flex: none; width: 92px; height: 92px; border-radius: 50%; }
+  .name {
+    margin: 0 0 4px;
+    color: var(--tm-text);
+    font-family: var(--tm-font-display);
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    line-height: 1.1;
+  }
+
+  .intro { max-width: 62ch; }
+
+  .block { margin-top: 40px; padding-top: 26px; border-top: 1px solid var(--tm-line-soft); }
+
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 18px; }
+  .principle { display: flex; flex-direction: column; gap: 6px; }
+  .principle strong { color: var(--tm-text); font-family: var(--tm-font-display); font-size: 17px; font-weight: 400; }
+  .principle p { margin: 0; color: var(--tm-muted); font-family: var(--tm-font-read); font-size: 14.5px; line-height: 1.55; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .note { max-width: 62ch; margin: 18px 0 0; color: var(--tm-faint); font-family: var(--tm-font-read); font-size: 14.5px; line-height: 1.6; }
+
+  .contacts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .contacts a {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1px solid var(--tm-line);
+    border-radius: 8px;
+    background: rgba(20, 24, 19, 0.45);
+    font-size: 13px;
+    transition: border-color var(--tm-motion-fast) ease, background var(--tm-motion-fast) ease;
+  }
+  .contacts a:hover { border-color: rgba(143, 187, 95, 0.45); background: rgba(38, 51, 27, 0.5); }
+  .contact-name { color: var(--tm-text); }
+  .contact-handle { color: var(--tm-faint); }
+  .contact-arrow { margin-left: auto; color: var(--tm-green); }
+
+  @media (max-width: 760px) {
+    .principles { grid-template-columns: 1fr; }
+    .contacts { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 700px) {
+    .page-head { padding-block: 38px 0; }
+    .body { padding-block: 24px 34px; }
+    .whoami img { width: 74px; height: 74px; }
+  }
 </style>

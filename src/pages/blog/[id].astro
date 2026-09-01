@@ -1,48 +1,168 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import TerminalLayout from '../../layouts/TerminalLayout.astro';
+import { formatLong, formatIso } from '../../lib/format';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+
+  return posts.map((post, index) => ({
+    params: { id: post.id },
+    props: {
+      post,
+      // The list is newest-first: the next entry is the older post.
+      newer: posts[index - 1] ?? null,
+      older: posts[index + 1] ?? null
+    }
+  }));
 }
 
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
-const published = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(post.data.published);
+const published = formatLong(post.data.published);
+const file = `~/blog/${post.id}.md`;
 ---
-<BaseLayout title={`${post.data.title} — glepzilla`} description={post.data.description} article>
-  <article class="post container" data-reveal>
-    <a class="back text-link" href="/blog/">← ко всем постам</a>
-    <div class="paper-card sheet">
-      <div class="meta">
-        <time datetime={post.data.published.toISOString()}>{published}</time>
-        <span>·</span>
-        <span>{post.data.tags.join(' · ')}</span>
+<TerminalLayout
+  title={`${post.data.title} — glepzilla`}
+  description={post.data.description}
+  article
+  quietBackground
+>
+  <article class="tm-section post" data-reveal>
+    <a class="tm-back tm-link back" href="/blog/"><span class="tm-prompt-sign">%</span> cd ~/blog</a>
+
+    <div class="tm-window">
+      <div class="tm-titlebar">
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot tm-dot--accent" aria-hidden="true"></span>
+        <span class="tm-path">gleb@glepzilla — {file}</span>
       </div>
-      <h1>{post.data.title}</h1>
-      <p class="lead">{post.data.description}</p>
-      <div class="prose"><Content /></div>
-      <footer class="post-footer">
-        <img src="/logo.png" width="52" height="52" alt="" />
-        <strong>Глеб</strong>
-        <a class="text-link text-link--paper" href="https://github.com/gl-epka" rel="me noreferrer">написать в GitHub →</a>
-      </footer>
+
+      <div class="tm-body sheet">
+        <div class="tm-prompt"><span class="tm-prompt-sign">%</span> cat {file}</div>
+
+        <div class="frontmatter" aria-hidden="true">
+          <span>---</span>
+          <span><em>published:</em> {formatIso(post.data.published)}</span>
+          {post.data.updated && <span><em>updated:</em> {formatIso(post.data.updated)}</span>}
+          {post.data.tags.length > 0 && <span><em>tags:</em> [{post.data.tags.join(', ')}]</span>}
+          <span>---</span>
+        </div>
+
+        <h1>{post.data.title}</h1>
+        <p class="dateline">
+          <time datetime={formatIso(post.data.published)}>{published}</time>
+        </p>
+        <p class="lead">{post.data.description}</p>
+
+        <div class="tm-prose"><Content /></div>
+
+        <footer class="post-footer">
+          <img src="/logo.png" width="46" height="46" alt="" />
+          <span class="who">Глеб<span class="tm-label">автор</span></span>
+          <a class="tm-link" href="https://t.me/gl_epka" target="_blank" rel="me noopener noreferrer">написать в Telegram →</a>
+        </footer>
+      </div>
     </div>
+
+    {(newer || older) && (
+      <nav class="siblings" aria-label="Соседние записи">
+        {older ? (
+          <a class="sibling" href={`/blog/${older.id}/`}>
+            <span class="tm-label">← предыдущая</span>
+            <span class="sibling-title">{older.data.title}</span>
+          </a>
+        ) : <span />}
+        {newer && (
+          <a class="sibling sibling--next" href={`/blog/${newer.id}/`}>
+            <span class="tm-label">следующая →</span>
+            <span class="sibling-title">{newer.data.title}</span>
+          </a>
+        )}
+      </nav>
+    )}
   </article>
-</BaseLayout>
+</TerminalLayout>
 
 <style>
-  .post { max-width: 900px; padding-top: 58px; }
-  .back { display: inline-block; margin: 0 0 22px; font-family: var(--gz-font-mono); font-size: 0.75rem; }
-  .sheet { position: relative; overflow: hidden; padding: clamp(30px, 7vw, 64px); transform: rotate(-0.35deg); background-image: radial-gradient(circle at 12% 5%, rgba(173, 145, 84, 0.08), transparent 25%), radial-gradient(circle at 88% 82%, rgba(90, 122, 60, 0.055), transparent 28%), repeating-linear-gradient(8deg, rgba(54, 67, 43, 0.018) 0 1px, transparent 1px 8px); }
-  .sheet::before { content: ''; position: absolute; inset: 13px; border: 1px solid rgba(90, 106, 77, 0.12); border-radius: calc(var(--gz-radius-card) - 8px); pointer-events: none; }
-  .meta { display: flex; flex-wrap: wrap; gap: 9px; color: var(--gz-moss-600); font-family: var(--gz-font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
-  h1 { max-width: 720px; margin: 17px 0 18px; color: var(--gz-ink-900); font-family: var(--gz-font-display); font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 500; line-height: 1.12; letter-spacing: -0.03em; }
-  .lead { margin: 0 0 40px; color: var(--gz-ink-500); font-size: 1.05rem; line-height: 1.65; }
-  .post-footer { display: flex; align-items: center; gap: 15px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--gz-paper-300); color: var(--gz-ink-500); }
-  .post-footer img { flex: none; width: 52px; height: 52px; border-radius: 50%; }
-  .post-footer strong { color: var(--gz-ink-900); font-size: 0.75rem; }
-  .post-footer a { margin-left: auto; font-size: 0.78rem; }
-  @media (max-width: 600px) { .post { padding-top: 40px; } .post-footer { align-items: flex-start; flex-wrap: wrap; } .post-footer a { width: 100%; margin: 4px 0 0; } }
+  .post { padding-block: 44px 52px; max-width: 940px; margin-inline: auto; }
+  .back { margin-bottom: 18px; }
+
+  .sheet { padding: clamp(24px, 5vw, 46px); }
+  .frontmatter {
+    display: flex;
+    flex-direction: column;
+    margin: 14px 0 26px;
+    color: var(--tm-dim);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  .frontmatter em { color: var(--tm-green-deep); font-style: normal; }
+
+  h1 {
+    max-width: 22ch;
+    margin: 0;
+    color: var(--tm-text);
+    font-family: var(--tm-font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+  }
+  .dateline {
+    margin: 14px 0 0;
+    color: var(--tm-faint);
+    font-family: var(--tm-font-label);
+    font-size: 10px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .lead {
+    max-width: 62ch;
+    margin: 18px 0 34px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--tm-line-soft);
+    color: var(--tm-muted);
+    font-family: var(--tm-font-read);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .post-footer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 46px;
+    padding-top: 22px;
+    border-top: 1px solid var(--tm-line-soft);
+    font-size: 13px;
+  }
+  .post-footer img { flex: none; width: 46px; height: 46px; border-radius: 50%; }
+  .who { display: flex; flex-direction: column; color: var(--tm-text); }
+  .post-footer a { margin-left: auto; }
+
+  .siblings { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 26px; }
+  .sibling {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 22px;
+    border: 1px solid var(--tm-line);
+    border-radius: 10px;
+    background: var(--tm-tile);
+    transition: border-color var(--tm-motion-fast) ease, background var(--tm-motion-fast) ease;
+  }
+  .sibling:hover { border-color: rgba(143, 187, 95, 0.45); background: rgba(38, 51, 27, 0.55); }
+  .sibling--next { text-align: right; }
+  .sibling-title { color: var(--tm-text); font-family: var(--tm-font-read); font-size: 15.5px; line-height: 1.45; }
+
+  @media (max-width: 700px) {
+    .post { padding-block: 30px 36px; }
+    .post-footer { flex-wrap: wrap; }
+    .post-footer a { width: 100%; margin: 6px 0 0; }
+    .siblings { grid-template-columns: 1fr; }
+    .sibling--next { text-align: left; }
+  }
 </style>

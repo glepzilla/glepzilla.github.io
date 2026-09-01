@@ -10,3 +10,6 @@ dist/
 # Local design references (not part of the production site)
 kit/
 Glepzilla стартовая страница/
+
+# Local editor/agent scratch
+.claude/

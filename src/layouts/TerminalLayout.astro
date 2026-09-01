@@ -1,0 +1,76 @@
+---
+/**
+ * The shared "Glepzilla Terminal" frame: the window shell, its live aurora
+ * background, the figlet nav and the contacts footer. The homepage
+ * (artboard 2a) defined this chrome; every page now renders inside it and
+ * only fills the slot.
+ */
+import BaseLayout from './BaseLayout.astro';
+import { NAV_LINKS, FOOTER_CONTACTS } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: boolean;
+  /** Dim the aurora — inner pages carry more text than the homepage. */
+  quietBackground?: boolean;
+}
+const { title, description, image, article = false, quietBackground = false } = Astro.props;
+
+const path = Astro.url.pathname;
+const year = new Date().getFullYear();
+
+// Small figlet "gz" nav mark — static, not part of the wordmark morph cycle.
+const NAV_MARK = '  __ _ ____\n / _` |_  /\n| (_| |/ / \n \\__, /___|\n |___/     ';
+---
+
+<BaseLayout title={title} description={description} image={image} article={article}>
+  <div class="tm-page">
+    <div class="tm-shell">
+      <div id="terminal-bg" class:list={['tm-bg', { 'tm-bg--quiet': quietBackground }]} aria-hidden="true"></div>
+
+      <nav class="tm-nav" aria-label="Основная навигация">
+        <a href="/" aria-label="glepzilla — на главную">
+          <pre class="tm-nav-mark"><span aria-hidden="true">{NAV_MARK}</span></pre>
+        </a>
+        <span class="tm-nav-links">
+          {NAV_LINKS.map((link) => (
+            <a href={link.href} aria-current={path.startsWith(link.href) ? 'page' : undefined}>{link.label}</a>
+          ))}
+          <span class="tm-nav-lang" title="Английская версия появится позже">RU/EN</span>
+        </span>
+      </nav>
+
+      <slot />
+
+      <footer class="tm-footer">
+        <span>© {year} glepzilla</span>
+        <span class="tm-footer-links">
+          <a href="/rss.xml">RSS</a>
+          {FOOTER_CONTACTS.map((contact) => (
+            <a href={contact.href} target="_blank" rel="me noopener noreferrer">{contact.name} →</a>
+          ))}
+        </span>
+      </footer>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // The aurora canvas lives behind the whole shell. The design system's
+  // pointer handlers are unbound on purpose: no "flashlight" following the
+  // cursor — the background just breathes on its own.
+  const bgHost = document.getElementById('terminal-bg');
+
+  if (bgHost) {
+    import('../lib/ds-backgrounds/index.js')
+      .then(({ createBackground }) => {
+        const surface = createBackground(bgHost, { effect: 'aurora', strength: 0.55 });
+        if (!surface) return;
+        if (surface.onPointerMove) window.removeEventListener('pointermove', surface.onPointerMove);
+        if (surface.onPointerDown) window.removeEventListener('pointerdown', surface.onPointerDown);
+      })
+      .catch((error) => console.warn('background engine unavailable', error));
+  }
+</script>
