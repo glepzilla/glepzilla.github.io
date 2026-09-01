@@ -1,70 +1,115 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostRow from '../../components/PostRow.astro';
+import TerminalLayout from '../../layouts/TerminalLayout.astro';
+import { banner } from '../../lib/banner';
+import { formatDM, formatIso, pluralizeRu } from '../../lib/format';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
 const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+
+const summary = `${posts.length} ${pluralizeRu(posts.length, 'запись', 'записи', 'записей')}`;
+const heading = banner('blog');
 ---
-<BaseLayout title="Блог — glepzilla" description="Заметки Глеба о проектах, инструментах и жизни в интернете.">
-  <section class="blog-page container" data-reveal>
-    <h1 class="section-heading">Блог<span class="title-dot">.</span></h1>
-    <p class="page-intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+<TerminalLayout
+  title="Блог — glepzilla"
+  description="Заметки Глеба о проектах, инструментах и жизни в интернете."
+  quietBackground
+>
+  <header class="tm-section page-head" data-reveal>
+    <h1 class="tm-banner"><span class="tm-sr">Блог</span><span aria-hidden="true">{heading}</span></h1>
+    <p class="tm-lede">Заметки о проектах, инструментах и обо всём, что не помещается в соцсети. Каждая запись — обычный markdown-файл в репозитории сайта.</p>
+  </header>
 
-    <div class="filters" aria-label="Фильтр записей по тегу">
-      <button class="filter active" type="button" data-filter="all" aria-pressed="true">все</button>
-      {tags.map((tag) => <button class="filter" type="button" data-filter={tag} aria-pressed="false">{tag}</button>)}
-    </div>
-
-    <div class="paper-card post-list" data-post-list>
-      {posts.map((post) => (
-        <PostRow
-          href={`/blog/${post.id}/`}
-          title={post.data.title}
-          description={post.data.description}
-          date={post.data.published}
-          tags={post.data.tags}
-        />
+  <section class="tm-section listing" data-reveal>
+    <div class="filters" role="group" aria-label="Фильтр записей по тегу">
+      <span class="tm-label filters-label">filter</span>
+      <button class="tm-chip" type="button" data-filter="all" aria-pressed="true">--all</button>
+      {tags.map((tag) => (
+        <button class="tm-chip" type="button" data-filter={tag} aria-pressed="false">--tag={tag}</button>
       ))}
-      <p class="empty" hidden data-empty>По этому тегу пока ничего нет.</p>
     </div>
+
+    <div class="tm-window">
+      <div class="tm-titlebar">
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot tm-dot--accent" aria-hidden="true"></span>
+        <span class="tm-path">gleb@glepzilla — ~/blog</span>
+      </div>
+      <div class="tm-body">
+        <div class="tm-prompt"><span class="tm-prompt-sign">%</span> ls -lt ~/blog<span class="tm-cursor" aria-hidden="true"></span></div>
+        <div class="tm-out count-line">total {posts.length}</div>
+
+        <div class="tm-ls post-list">
+          {posts.map((post) => (
+            <a class="tm-ls-row post-row" href={`/blog/${post.id}/`} data-tags={post.data.tags.join(',')}>
+              <time class="tm-ls-date" datetime={formatIso(post.data.published)}>{formatDM(post.data.published)}</time>
+              <span class="tm-ls-name">{post.id}.md</span>
+              <span class="tm-ls-title">{post.data.title}</span>
+              <span class="tm-ls-desc">{post.data.description}</span>
+              {post.data.tags.length > 0 && <span class="tm-ls-tags">{post.data.tags.map((tag) => `#${tag}`).join(' ')}</span>}
+            </a>
+          ))}
+        </div>
+
+        <p class="tm-out empty" hidden data-empty>По этому тегу пока ничего нет.</p>
+        <div class="tm-out summary" data-summary>{summary}</div>
+      </div>
+    </div>
+
+    <p class="rss-line"><a class="tm-link" href="/rss.xml">% curl glepzilla.ru/rss.xml — подписаться →</a></p>
   </section>
-</BaseLayout>
+</TerminalLayout>
 
 <script>
+  import { pluralizeRu } from '../../lib/format';
+
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
   const rows = [...document.querySelectorAll<HTMLElement>('[data-tags]')];
   const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const summary = document.querySelector<HTMLElement>('[data-summary]');
 
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
       const filter = button.dataset.filter ?? 'all';
       let visible = 0;
-      buttons.forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('active', active);
-        item.setAttribute('aria-pressed', String(active));
-      });
+
+      buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
       rows.forEach((row) => {
         const tags = (row.dataset.tags ?? '').split(',');
         const show = filter === 'all' || tags.includes(filter);
         row.hidden = !show;
         if (show) visible += 1;
       });
+
       if (empty) empty.hidden = visible > 0;
+      if (summary) summary.textContent = `${visible} ${pluralizeRu(visible, 'запись', 'записи', 'записей')}`;
     });
   });
 </script>
 
 <style>
-  .blog-page { max-width: 940px; padding-top: 65px; }
-  .filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 30px 0 28px; }
-  .filter { padding: 7px 14px; border: 1px solid var(--gz-border-tile); border-radius: var(--gz-radius-pill); background: transparent; color: var(--gz-sage-300); font-family: var(--gz-font-mono); font-size: 0.72rem; cursor: pointer; transition: color var(--gz-motion-fast) ease, border-color var(--gz-motion-fast) ease, background var(--gz-motion-fast) ease, translate var(--gz-motion-fast) var(--gz-ease-out), scale var(--gz-motion-fast) var(--gz-ease-out); }
-  .filter:hover { border-color: var(--gz-moss-400); color: var(--gz-moss-400); translate: 0 -2px; }
-  .filter:active { scale: 0.96; }
-  .filter.active { border-color: var(--gz-moss-400); background: var(--gz-moss-400); color: var(--gz-forest-900); font-weight: 700; }
-  .post-list { padding: 30px 36px; transform: rotate(-0.45deg); }
-  .empty { margin: 0; padding: 25px 0 5px; color: var(--gz-ink-500); }
-  @media (max-width: 600px) { .blog-page { padding-top: 44px; } .post-list { padding: 22px; } }
+  .page-head { padding-block: 60px 0; }
+  .listing { padding-block: 34px 48px; }
+
+  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 22px; }
+  .filters-label { margin-right: 4px; }
+
+  .count-line { padding-top: 10px; }
+  .post-list { padding-top: 6px; }
+  .post-row { padding: 14px 0; border-top: 1px solid var(--tm-line-soft); border-radius: 0; }
+  .post-row:first-child { border-top: 0; }
+
+  .empty { margin: 0; padding-top: 14px; }
+  .summary { padding-top: 16px; color: var(--tm-muted); }
+
+  .rss-line { margin: 22px 0 0; font-size: 13px; }
+
+  @media (max-width: 700px) {
+    .page-head { padding-block: 38px 0; }
+    .listing { padding-block: 26px 34px; }
+    .post-row { grid-template-columns: 1fr; gap: 3px; }
+    .post-row > * { grid-column: 1 !important; }
+  }
 </style>

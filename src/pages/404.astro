@@ -1,19 +1,54 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import TerminalLayout from '../layouts/TerminalLayout.astro';
+import { banner } from '../lib/banner';
+
+const heading = banner('404');
 ---
-<BaseLayout title="Страница не найдена — glepzilla" description="Такой страницы у glepzilla пока нет.">
-  <section class="not-found container" data-reveal>
-    <div class="paper-card card">
-      <span class="eyebrow eyebrow--paper">Ошибка 404</span>
-      <h1>Здесь пока ничего не растёт<span class="title-dot">.</span></h1>
-      <p>Возможно, страница переехала или ссылка была набрана с ошибкой.</p>
-      <a class="text-link text-link--paper" href="/">вернуться домой →</a>
+<TerminalLayout
+  title="Страница не найдена — glepzilla"
+  description="Такой страницы у glepzilla пока нет."
+  quietBackground
+>
+  <section class="tm-section not-found">
+    <h1 class="tm-banner"><span class="tm-sr">404 — страница не найдена</span><span aria-hidden="true">{heading}</span></h1>
+
+    <div class="tm-window window">
+      <div class="tm-titlebar">
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot" aria-hidden="true"></span>
+        <span class="tm-dot tm-dot--accent" aria-hidden="true"></span>
+        <span class="tm-path">gleb@glepzilla — ~</span>
+      </div>
+      <div class="tm-body">
+        <div class="tm-prompt"><span class="tm-prompt-sign">%</span> cd <span data-path>/</span><span class="tm-cursor" aria-hidden="true"></span></div>
+        <p class="error">cd: no such file or directory: <span data-path>/</span></p>
+        <p class="hint">Похоже, страница переехала или в ссылке опечатка. Вот куда точно можно дойти:</p>
+        <ul class="routes">
+          <li><a class="tm-link" href="/"><span class="tm-prompt-sign">%</span> cd ~ — на главную</a></li>
+          <li><a class="tm-link" href="/blog/"><span class="tm-prompt-sign">%</span> ls ~/blog — все записи</a></li>
+          <li><a class="tm-link" href="/projects/"><span class="tm-prompt-sign">%</span> ls ~/projects — проекты</a></li>
+        </ul>
+      </div>
     </div>
   </section>
-</BaseLayout>
+</TerminalLayout>
+
+<script>
+  // The 404 is a static page, so the path that failed is only known here.
+  const requested = window.location.pathname + window.location.search;
+  document.querySelectorAll<HTMLElement>('[data-path]').forEach((slot) => {
+    slot.textContent = requested;
+  });
+</script>
+
 <style>
-  .not-found { max-width: 780px; padding-top: 90px; }
-  .card { padding: clamp(34px, 8vw, 70px); transform: rotate(-0.7deg); }
-  h1 { margin: 14px 0; color: var(--gz-ink-900); font-family: var(--gz-font-display); font-size: clamp(2.2rem, 7vw, 3.8rem); font-weight: 500; line-height: 1.12; }
-  p { color: var(--gz-ink-500); }
+  .not-found { padding-block: 70px 60px; max-width: 820px; margin-inline: auto; }
+  .window { margin-top: 30px; }
+  .error { margin: 10px 0 0; color: #d08a6a; font-size: 13.5px; overflow-wrap: anywhere; }
+  .hint { max-width: 56ch; margin: 20px 0 0; color: var(--tm-muted); font-family: var(--tm-font-read); font-size: 15.5px; line-height: 1.6; }
+  .routes { margin: 18px 0 0; padding: 0; list-style: none; font-size: 13.5px; line-height: 2.1; }
+
+  @media (max-width: 700px) {
+    .not-found { padding-block: 40px 36px; }
+  }
 </style>

@@ -1,0 +1,428 @@
+/**
+ * "Glepzilla Terminal" — the site's design layer.
+ *
+ * The homepage (artboard 2a) established the palette, the window chrome and
+ * the ASCII typography; everything here is that vocabulary lifted out of the
+ * page so /blog/, /projects/, /about/ and 404 speak it too. Page-specific
+ * layout stays in each page's own scoped <style>.
+ */
+
+:root {
+  /* surfaces */
+  --tm-bg: #070906;
+  --tm-shell: #0b0e0a;
+  --tm-card: rgba(6, 8, 6, 0.92);
+  --tm-tile: rgba(20, 24, 19, 0.62);
+  --tm-tile-strong: rgba(20, 24, 19, 0.9);
+  --tm-line: rgba(233, 240, 226, 0.1);
+  --tm-line-soft: rgba(233, 240, 226, 0.08);
+
+  /* ink */
+  --tm-text: #eef1e9;
+  --tm-read: #d5dccb;
+  --tm-muted: #a8b0a0;
+  --tm-faint: #737b6c;
+  --tm-dim: #545c4e;
+
+  /* accent */
+  --tm-green: #8fbb5f;
+  --tm-green-bright: #b9d977;
+  --tm-green-deep: #4e7030;
+  --tm-glow: rgba(143, 187, 95, 0.45);
+
+  /* type */
+  --tm-font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+  --tm-font-ascii: 'JetBrains Mono', ui-monospace, monospace;
+  --tm-font-label: 'Martian Mono', ui-monospace, monospace;
+  --tm-font-display: Prata, Georgia, serif;
+  --tm-font-read: Literata, Georgia, serif;
+
+  /* rhythm */
+  --tm-pad-x: 44px;
+  --tm-motion-fast: 160ms;
+  --tm-motion-base: 320ms;
+  --tm-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (max-width: 700px) {
+  :root { --tm-pad-x: 20px; }
+}
+
+@keyframes tm-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ── page frame ─────────────────────────────────────────────────────────── */
+
+.tm-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: var(--tm-bg);
+  color: var(--tm-text);
+  font-family: var(--tm-font-mono);
+}
+
+.tm-shell {
+  position: relative;
+  overflow: hidden;
+  max-width: 1240px;
+  margin: 0 auto;
+  border: 1px solid var(--tm-line);
+  border-radius: 12px;
+  background: var(--tm-shell);
+}
+.tm-shell a { text-decoration: none; }
+
+.tm-bg {
+  position: absolute;
+  inset: 0;
+  --ds-canvas-base: #0b0e0a;
+  --ds-canvas-a: #74964a;
+  --ds-canvas-b: #2f5a46;
+  --ds-canvas-c: #b9d977;
+  --ds-canvas-ink: #cdd2c5;
+  opacity: 0.85;
+}
+.tm-bg canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+/* Inner pages carry more text than the homepage — the aurora sits further back. */
+.tm-bg--quiet { opacity: 0.45; }
+
+/* Every band of page content lines up with the nav and the footer. */
+.tm-section { position: relative; padding-inline: var(--tm-pad-x); }
+
+/* ── nav ────────────────────────────────────────────────────────────────── */
+
+.tm-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px var(--tm-pad-x);
+  border-bottom: 1px solid var(--tm-line-soft);
+  font-size: 14px;
+}
+.tm-nav-mark {
+  flex-shrink: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--tm-green);
+  font-family: var(--tm-font-ascii);
+  font-size: clamp(8px, 1vw, 9.5px);
+  line-height: 1.12;
+  white-space: pre;
+  text-shadow: 0 0 10px var(--tm-glow);
+}
+.tm-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  color: var(--tm-muted);
+  font-family: var(--tm-font-label);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tm-nav-links a { color: var(--tm-muted); transition: color var(--tm-motion-fast) ease; }
+.tm-nav-links a:hover { color: var(--tm-green-bright); }
+.tm-nav-links a[aria-current='page'] { color: var(--tm-green); }
+.tm-nav-lang { color: var(--tm-dim); }
+
+/* ── footer ─────────────────────────────────────────────────────────────── */
+
+.tm-footer {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px var(--tm-pad-x);
+  border-top: 1px solid var(--tm-line-soft);
+  color: var(--tm-faint);
+  font-family: var(--tm-font-label);
+  font-size: 10px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tm-footer-links { display: flex; flex-wrap: wrap; gap: 20px; }
+.tm-footer-links a { color: var(--tm-muted); transition: color var(--tm-motion-fast) ease; }
+.tm-footer-links a:hover { color: var(--tm-green-bright); }
+
+/* ── headings ───────────────────────────────────────────────────────────── */
+
+/* Block-figlet page title. Decorative: the real name is on the sr-only span. */
+.tm-banner {
+  margin: 0;
+  overflow: hidden;
+  color: var(--tm-green);
+  font-family: var(--tm-font-ascii);
+  font-size: clamp(10px, 1.7vw, 17px);
+  font-weight: 400;
+  line-height: 1.05;
+  white-space: pre;
+  text-shadow: 0 0 16px var(--tm-glow), 0 0 42px rgba(143, 187, 95, 0.16);
+}
+.tm-lede {
+  max-width: 62ch;
+  margin: 18px 0 0;
+  color: var(--tm-muted);
+  font-family: var(--tm-font-read);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+/* ── prompt lines ───────────────────────────────────────────────────────── */
+
+.tm-prompt {
+  color: var(--tm-faint);
+  font-size: 13.5px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.tm-prompt-sign { color: var(--tm-green); }
+.tm-out { color: var(--tm-dim); font-size: 13.5px; line-height: 1.9; }
+.tm-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  vertical-align: -2px;
+  background: var(--tm-green);
+  animation: tm-blink 1.05s step-end infinite;
+}
+
+/* ── window ─────────────────────────────────────────────────────────────── */
+
+.tm-window {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(143, 187, 95, 0.24);
+  border-radius: 10px;
+  background: var(--tm-card);
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.85);
+}
+.tm-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--tm-line-soft);
+  background: var(--tm-tile-strong);
+}
+.tm-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--tm-dim); }
+.tm-dot--accent { background: var(--tm-green); }
+.tm-path {
+  min-width: 0;
+  margin-left: 8px;
+  overflow: hidden;
+  color: var(--tm-faint);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tm-body {
+  padding: 22px 22px 26px;
+  font-size: 13.5px;
+  line-height: 1.95;
+  overflow-wrap: break-word;
+}
+
+/* ── ls listing ─────────────────────────────────────────────────────────── */
+
+.tm-ls { display: flex; flex-direction: column; }
+.tm-ls-row {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 4px 14px;
+  padding: 6px 0;
+  color: var(--tm-text);
+  border-radius: 6px;
+  transition: background var(--tm-motion-fast) ease;
+}
+.tm-ls-row:hover { background: rgba(143, 187, 95, 0.06); }
+.tm-ls-date { color: var(--tm-green-deep); }
+.tm-ls-name { min-width: 0; overflow-wrap: anywhere; }
+.tm-ls-row:hover .tm-ls-name { color: var(--tm-green-bright); }
+.tm-ls-title {
+  grid-column: 2;
+  color: var(--tm-read);
+  font-family: var(--tm-font-read);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.tm-ls-desc { grid-column: 2; color: var(--tm-faint); font-size: 12.5px; line-height: 1.6; }
+.tm-ls-tags { grid-column: 2; color: var(--tm-green-deep); font-size: 11.5px; }
+
+/* ── project cards ──────────────────────────────────────────────────────── */
+
+.tm-project {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid var(--tm-line);
+  border-radius: 10px;
+  background: var(--tm-tile);
+  color: var(--tm-text);
+  transition: border-color var(--tm-motion-fast) ease, background var(--tm-motion-fast) ease;
+}
+a.tm-project:hover { border-color: rgba(143, 187, 95, 0.45); background: rgba(38, 51, 27, 0.55); }
+.tm-project-num {
+  color: var(--tm-green-deep);
+  font-family: var(--tm-font-label);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.tm-project-name {
+  font-family: var(--tm-font-display);
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+.tm-project-desc {
+  color: var(--tm-muted);
+  font-family: var(--tm-font-read);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.tm-project-tags {
+  padding-top: 4px;
+  color: var(--tm-faint);
+  font-family: var(--tm-font-label);
+  font-size: 9.5px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* ── small parts ────────────────────────────────────────────────────────── */
+
+.tm-label {
+  color: var(--tm-faint);
+  font-family: var(--tm-font-label);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.tm-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border: 1px solid var(--tm-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tm-muted);
+  font-family: var(--tm-font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: color var(--tm-motion-fast) ease, border-color var(--tm-motion-fast) ease, background var(--tm-motion-fast) ease;
+}
+.tm-chip:hover { border-color: rgba(143, 187, 95, 0.45); color: var(--tm-green-bright); }
+.tm-chip[aria-pressed='true'] {
+  border-color: rgba(143, 187, 95, 0.55);
+  background: rgba(143, 187, 95, 0.14);
+  color: var(--tm-green-bright);
+}
+.tm-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border: 1px solid rgba(143, 187, 95, 0.28);
+  border-radius: 999px;
+  color: var(--tm-green);
+  font-family: var(--tm-font-mono);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.tm-link {
+  color: var(--tm-green);
+  transition: color var(--tm-motion-fast) ease, translate var(--tm-motion-fast) var(--tm-ease);
+}
+.tm-link:hover { color: var(--tm-green-bright); }
+/* inline-flex would swallow the space after the % sign — gap restores it. */
+.tm-back { display: inline-flex; gap: 0.55ch; font-size: 13px; }
+.tm-back:hover { translate: -3px 0; }
+
+/* ── long-form text ─────────────────────────────────────────────────────── */
+
+.tm-prose {
+  color: var(--tm-read);
+  font-family: var(--tm-font-read);
+  font-size: 17px;
+  line-height: 1.75;
+}
+.tm-prose > :first-child { margin-top: 0; }
+.tm-prose > :last-child { margin-bottom: 0; }
+.tm-prose p, .tm-prose ul, .tm-prose ol { margin: 0 0 1.3em; }
+.tm-prose li { margin-bottom: 0.4em; }
+.tm-prose h2, .tm-prose h3 {
+  color: var(--tm-text);
+  font-family: var(--tm-font-display);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.tm-prose h2 { margin: 2em 0 0.6em; font-size: clamp(1.45rem, 3.4vw, 1.8rem); }
+.tm-prose h3 { margin: 1.7em 0 0.55em; font-size: 1.25rem; }
+.tm-prose a {
+  color: var(--tm-green);
+  text-decoration: underline;
+  text-decoration-color: rgba(143, 187, 95, 0.4);
+  text-underline-offset: 3px;
+}
+.tm-prose a:hover { color: var(--tm-green-bright); }
+.tm-prose strong { color: var(--tm-text); }
+.tm-prose blockquote {
+  margin: 1.7em 0;
+  padding: 0.2em 0 0.2em 1.3em;
+  border-left: 2px solid var(--tm-green-deep);
+  color: var(--tm-text);
+  font-style: italic;
+}
+.tm-prose hr { margin: 2.2em 0; border: 0; border-top: 1px solid var(--tm-line); }
+.tm-prose code { font-family: var(--tm-font-mono); font-size: 0.85em; }
+.tm-prose :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--tm-line);
+  border-radius: 4px;
+  background: rgba(20, 24, 19, 0.8);
+  color: var(--tm-green-bright);
+}
+.tm-prose pre {
+  overflow-x: auto;
+  padding: 18px 20px;
+  border: 1px solid var(--tm-line);
+  border-radius: 10px;
+}
+.tm-prose img { border-radius: 10px; }
+
+/* ── responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .tm-nav { flex-wrap: wrap; row-gap: 12px; }
+  .tm-nav-links { flex-wrap: wrap; column-gap: 22px; row-gap: 10px; }
+}
+
+@media (max-width: 700px) {
+  .tm-page { padding: 12px; }
+  .tm-body { padding: 18px 16px 22px; }
+  .tm-prose { font-size: 16px; }
+}
+
+/* Visually hidden, still read out — used for the text behind ASCII banners. */
+.tm-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

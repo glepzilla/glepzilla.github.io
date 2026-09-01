@@ -7,7 +7,8 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
-      theme: 'github-light'
+      // Code blocks sit inside the dark terminal sheet.
+      theme: 'github-dark-default'
     }
   }
 });
